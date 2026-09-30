@@ -1,0 +1,67 @@
+services:
+  hapi-dk:
+    image: hapiproject/hapi:v8.12.0-1
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_CONFIG_ADDITIONAL_LOCATION: file:/configs/dk.yaml
+    volumes:
+      - ./hapi/dk.yaml:/configs/dk.yaml:ro
+
+  hapi-de-hospital:
+    image: hapiproject/hapi:v8.12.0-1
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_CONFIG_ADDITIONAL_LOCATION: file:/configs/de-hospital.yaml
+    volumes:
+      - ./hapi/de-hospital.yaml:/configs/de-hospital.yaml:ro
+
+  hapi-de-gp:
+    image: hapiproject/hapi:v8.12.0-1
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_CONFIG_ADDITIONAL_LOCATION: file:/configs/de-gp.yaml
+    volumes:
+      - ./hapi/de-gp.yaml:/configs/de-gp.yaml:ro
+
+  # Two validators because hospital and GP use different de.basisprofil.r4 versions
+  validator-hospital:
+    build:
+      context: ./validator
+      args:
+        IGS: >-
+          hl7.fhir.dk.core#3.7.0
+          de.basisprofil.r4#1.5.2
+          de.gematik.isik-basismodul#4.0.3
+          de.medizininformatikinitiative.kerndatensatz.person#2025.0.1
+          de.medizininformatikinitiative.kerndatensatz.diagnose#2025.0.1
+          de.medizininformatikinitiative.kerndatensatz.medikation#2026.0.1
+          de.medizininformatikinitiative.kerndatensatz.laborbefund#2026.0.3
+          de.medizininformatikinitiative.kerndatensatz.consent#2026.0.0
+    image: dkde-validator-hospital
+    volumes: &validator-volumes
+      - ./data:/data
+    environment:
+      REPORT_NAME: hospital
+      INPUTS:
+      TX_SERVER: ${TX_SERVER:-https://tx.fhir.org}
+    profiles: ["tools"]
+
+  validator-gp:
+    build:
+      context: ./validator
+      args:
+        IGS: >-
+          hl7.fhir.dk.core#3.7.0
+          de.basisprofil.r4#1.5.4
+          kbv.basis#1.9.0
+          de.gematik.epa.medication#1.3.5
+    image: dkde-validator-gp
+    volumes: *validator-volumes
+    environment:
+      REPORT_NAME: gp
+      INPUTS:
+      TX_SERVER: ${TX_SERVER:-https://tx.fhir.org}
+    profiles: ["tools"]

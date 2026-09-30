@@ -1,0 +1,13 @@
+hapi:
+  fhir:
+    fhir_version: R4
+    implementationguides:
+      dkcore:
+        name: hl7.fhir.dk.core
+        version: 3.7.0
+        packageUrl: https://packages.fhir.org/hl7.fhir.dk.core/3.7.0
+        installMode: STORE_AND_INSTALL
+    tester:
+      home:
+        name: DK (DK-Core)
+        server_address: http://localhost:8080/fhir

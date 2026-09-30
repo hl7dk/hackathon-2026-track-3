@@ -1,0 +1,55 @@
+hapi:
+  fhir:
+    fhir_version: R4
+    implementationguides:
+      # Needed by ISiK, HAPI doesn't pull it in by itself
+      subscriptions_backport:
+        name: hl7.fhir.uv.subscriptions-backport.r4
+        version: 1.1.0
+        packageUrl: https://packages.fhir.org/hl7.fhir.uv.subscriptions-backport.r4/1.1.0
+        installMode: STORE_AND_INSTALL
+      basisprofil:
+        name: de.basisprofil.r4
+        version: 1.5.2
+        packageUrl: https://packages.fhir.org/de.basisprofil.r4/1.5.2
+        installMode: STORE_AND_INSTALL
+      isik_basis:
+        name: de.gematik.isik-basismodul
+        version: 4.0.3
+        packageUrl: https://packages.fhir.org/de.gematik.isik-basismodul/4.0.3
+        installMode: STORE_AND_INSTALL
+      mii_person:
+        name: de.medizininformatikinitiative.kerndatensatz.person
+        version: 2025.0.1
+        packageUrl: https://packages.fhir.org/de.medizininformatikinitiative.kerndatensatz.person/2025.0.1
+        installMode: STORE_AND_INSTALL
+      mii_diagnose:
+        name: de.medizininformatikinitiative.kerndatensatz.diagnose
+        version: 2025.0.1
+        packageUrl: https://packages.fhir.org/de.medizininformatikinitiative.kerndatensatz.diagnose/2025.0.1
+        installMode: STORE_AND_INSTALL
+      mii_medikation:
+        name: de.medizininformatikinitiative.kerndatensatz.medikation
+        version: 2026.0.1
+        packageUrl: https://packages.fhir.org/de.medizininformatikinitiative.kerndatensatz.medikation/2026.0.1
+        installMode: STORE_AND_INSTALL
+      mii_laborbefund:
+        name: de.medizininformatikinitiative.kerndatensatz.laborbefund
+        version: 2026.0.3
+        packageUrl: https://packages.fhir.org/de.medizininformatikinitiative.kerndatensatz.laborbefund/2026.0.3
+        installMode: STORE_AND_INSTALL
+      # Needed by MII Consent
+      einwilligungsmanagement:
+        name: de.einwilligungsmanagement
+        version: 2.0.2
+        packageUrl: https://packages.fhir.org/de.einwilligungsmanagement/2.0.2
+        installMode: STORE_AND_INSTALL
+      mii_consent:
+        name: de.medizininformatikinitiative.kerndatensatz.consent
+        version: 2026.0.0
+        packageUrl: https://packages.fhir.org/de.medizininformatikinitiative.kerndatensatz.consent/2026.0.0
+        installMode: STORE_AND_INSTALL
+    tester:
+      home:
+        name: DE hospital (ISiK, MII)
+        server_address: http://localhost:8081/fhir
