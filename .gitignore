@@ -1,0 +1,38 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+.next/
+
+# Java
+target/
+build/
+.gradle/
+*.class
+
+# FHIR tooling
+fsh-generated/
+output/
+temp/
+input-cache/
+*.log
