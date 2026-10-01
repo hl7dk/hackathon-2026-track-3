@@ -10,4 +10,4 @@ hapi:
     tester:
       home:
         name: DK (DK-Core)
-        server_address: http://localhost:8080/fhir
+        server_address: http://localhost:28080/fhir

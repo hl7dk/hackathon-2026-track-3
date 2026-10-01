@@ -52,4 +52,4 @@ hapi:
     tester:
       home:
         name: DE hospital (ISiK, MII)
-        server_address: http://localhost:8081/fhir
+        server_address: http://localhost:28081/fhir
