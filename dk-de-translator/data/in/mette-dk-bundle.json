@@ -1,0 +1,256 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:d85c7c99-dabd-57f3-b150-fb66e9100822",
+      "resource": {
+        "resourceType": "Patient",
+        "meta": {
+          "profile": [
+            "http://hl7.dk/fhir/core/StructureDefinition/dk-core-patient"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Mette Hansen, female, born 1971-08-22, CPR 2208712468</div>"
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:1.2.208.176.1.2",
+            "value": "2208712468"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Hansen",
+            "given": [
+              "Mette"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1971-08-22"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:55a177be-6f98-569d-bc2b-d540c4892dc5",
+      "resource": {
+        "resourceType": "Condition",
+        "meta": {
+          "profile": [
+            "http://hl7.dk/fhir/core/StructureDefinition/dk-core-condition"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnosis: Nedsat stofskifte (T86)</div>"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item",
+                "display": "Problem List Item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "urn:oid:1.2.208.176.2.31",
+              "code": "T86",
+              "display": "Hypothyreose/myksødem"
+            }
+          ],
+          "text": "Nedsat stofskifte"
+        },
+        "subject": {
+          "reference": "urn:uuid:d85c7c99-dabd-57f3-b150-fb66e9100822"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:19f5d00e-0f55-5d05-bd09-4784fe1b5215",
+      "resource": {
+        "resourceType": "Condition",
+        "meta": {
+          "profile": [
+            "http://hl7.dk/fhir/core/StructureDefinition/dk-core-condition"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnosis: Depression (P76)</div>"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item",
+                "display": "Problem List Item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "urn:oid:1.2.208.176.2.31",
+              "code": "P76",
+              "display": "Depression"
+            }
+          ],
+          "text": "Depression"
+        },
+        "subject": {
+          "reference": "urn:uuid:d85c7c99-dabd-57f3-b150-fb66e9100822"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:69be224a-9aed-50e2-bc9a-518d94143bfe",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.whocc.no/atc",
+              "code": "H03AA01",
+              "display": "Levothyroxin"
+            }
+          ],
+          "text": "Eltroxin 100 mikrog"
+        },
+        "subject": {
+          "reference": "urn:uuid:d85c7c99-dabd-57f3-b150-fb66e9100822"
+        },
+        "dosage": [
+          {
+            "text": "1 tablet dagligt fastende"
+          }
+        ],
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medication: Eltroxin 100 mikrog (H03AA01), 1 tablet dagligt fastende</div>"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4b4c98d5-1502-50f4-bfe1-0503f56db466",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.whocc.no/atc",
+              "code": "N06AB06",
+              "display": "Sertralin"
+            }
+          ],
+          "text": "Sertralin 50 mg"
+        },
+        "subject": {
+          "reference": "urn:uuid:d85c7c99-dabd-57f3-b150-fb66e9100822"
+        },
+        "dosage": [
+          {
+            "text": "1 tablet dagligt"
+          }
+        ],
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medication: Sertralin 50 mg (N06AB06), 1 tablet dagligt</div>"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4ad7f7da-9899-543a-93e3-e312b6b665e0",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "text": "Magnyl 75 mg"
+        },
+        "subject": {
+          "reference": "urn:uuid:d85c7c99-dabd-57f3-b150-fb66e9100822"
+        },
+        "dosage": [
+          {
+            "text": "1 tablet dagligt"
+          }
+        ],
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medication: Magnyl 75 mg, 1 tablet dagligt</div>"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    }
+  ]
+}

@@ -1,0 +1,263 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:70755fb3-76ab-57ff-93e8-c7ae499d65b9",
+      "resource": {
+        "resourceType": "Patient",
+        "meta": {
+          "profile": [
+            "http://hl7.dk/fhir/core/StructureDefinition/dk-core-patient"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Emma Nielsen, female, born 2017-03-14, CPR 1403174012</div>"
+        },
+        "identifier": [
+          {
+            "system": "urn:oid:1.2.208.176.1.2",
+            "value": "1403174012"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Nielsen",
+            "given": [
+              "Emma"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "2017-03-14"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:56657d5a-c3e4-593a-b09e-73a4eca6be6a",
+      "resource": {
+        "resourceType": "Condition",
+        "meta": {
+          "profile": [
+            "http://hl7.dk/fhir/core/StructureDefinition/dk-core-condition"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnosis: Type 1-diabetes (DE109)</div>"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item",
+                "display": "Problem List Item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "urn:oid:1.2.208.176.2.4.12",
+              "code": "DE109",
+              "display": "Type 1-diabetes uden komplikationer"
+            }
+          ],
+          "text": "Type 1-diabetes"
+        },
+        "subject": {
+          "reference": "urn:uuid:70755fb3-76ab-57ff-93e8-c7ae499d65b9"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:fa9ab52a-b3fd-5ef3-8f31-c9e360d33cdd",
+      "resource": {
+        "resourceType": "Condition",
+        "meta": {
+          "profile": [
+            "http://hl7.dk/fhir/core/StructureDefinition/dk-core-condition"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnosis: Astma (DJ459)</div>"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item",
+                "display": "Problem List Item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "urn:oid:1.2.208.176.2.4.12",
+              "code": "DJ459",
+              "display": "Astma UNS"
+            }
+          ],
+          "text": "Astma"
+        },
+        "subject": {
+          "reference": "urn:uuid:70755fb3-76ab-57ff-93e8-c7ae499d65b9"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:3f363752-c747-5c51-af63-0a24ed797e9c",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.whocc.no/atc",
+              "code": "A10AB05",
+              "display": "Insulin aspart"
+            }
+          ],
+          "text": "NovoRapid 100 E/ml"
+        },
+        "subject": {
+          "reference": "urn:uuid:70755fb3-76ab-57ff-93e8-c7ae499d65b9"
+        },
+        "dosage": [
+          {
+            "text": "Efter kulhydrattælling til måltider"
+          }
+        ],
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medication: NovoRapid 100 E/ml (A10AB05), Efter kulhydrattælling til måltider</div>"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b67ab361-4469-5ea8-8648-da4c73602cc6",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.whocc.no/atc",
+              "code": "A10AE04",
+              "display": "Insulin glargin"
+            }
+          ],
+          "text": "Lantus 100 E/ml"
+        },
+        "subject": {
+          "reference": "urn:uuid:70755fb3-76ab-57ff-93e8-c7ae499d65b9"
+        },
+        "dosage": [
+          {
+            "text": "8 E til aften"
+          }
+        ],
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medication: Lantus 100 E/ml (A10AE04), 8 E til aften</div>"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:6483ff5f-8ed6-5b20-b4e3-b74b4dc8fb0f",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.whocc.no/atc",
+              "code": "R03AC02",
+              "display": "Salbutamol"
+            }
+          ],
+          "text": "Ventoline 0,1 mg/dosis"
+        },
+        "subject": {
+          "reference": "urn:uuid:70755fb3-76ab-57ff-93e8-c7ae499d65b9"
+        },
+        "dosage": [
+          {
+            "text": "1-2 pust ved behov"
+          }
+        ],
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medication: Ventoline 0,1 mg/dosis (R03AC02), 1-2 pust ved behov</div>"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    }
+  ]
+}
