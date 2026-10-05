@@ -38,7 +38,7 @@
                 }
               ]
             },
-            "system": "https://praxis-flensburg.example.org/fhir/sid/patientennummer",
+            "system": "https://fhir.hausarztpraxis-flensburg.de/sid/patientennummer",
             "value": "P-4711"
           }
         ],
@@ -307,7 +307,7 @@
                   "valueCoding": {
                     "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
                     "code": "V",
-                    "display": "Verdacht auf"
+                    "display": "Verdacht auf / zum Ausschluss von"
                   }
                 }
               ],
@@ -352,7 +352,7 @@
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
-              "version": "2026",
+              "version": "2025",
               "code": "C09AA05",
               "display": "Ramipril"
             }
@@ -426,7 +426,7 @@
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
-              "version": "2026",
+              "version": "2025",
               "code": "A10BA02",
               "display": "Metformin"
             }
@@ -500,7 +500,7 @@
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
-              "version": "2026",
+              "version": "2025",
               "code": "M01AE01",
               "display": "Ibuprofen"
             }
@@ -574,7 +574,7 @@
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
-              "version": "2026",
+              "version": "2025",
               "code": "A02BC02",
               "display": "Pantoprazol"
             }
