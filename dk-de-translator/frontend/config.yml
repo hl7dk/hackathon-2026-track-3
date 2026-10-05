@@ -1,9 +1,11 @@
 # Front end configuration. Restart `npm run dev` after editing.
 #
 # Each server has a url the page calls. With proxyTo set, `npm run dev` forwards
-# that path to the real server (ports from ../docker-compose.yml), so the page shows
-# readable paths named after the containers and CORS does not come into play.
-# For a remote server, put its full https URL in url and leave out proxyTo.
+# that path to the real server, so CORS does not come into play. auth: basic makes
+# the proxy log in with USERNAME/PASSWORD from ../.env (they never reach the browser).
+# The shared servers are datasource1..4.hl7-your-health.projects.alexandrainst.dk.
+# For the local containers (docker compose --profile local up -d), use
+# proxyTo http://localhost:28080/fhir (dk), 28081 (de-hospital), 28082 (de-gp) and drop auth.
 
 # Who the placeholder sign-in logs in.
 patient:
@@ -18,16 +20,19 @@ cprSystem: urn:oid:1.2.208.176.1.2
 sources:
   - id: dk
     label: Danish GP (DK-Core)
-    url: /hapi-dk/fhir
-    proxyTo: http://localhost:28080/fhir
+    url: /datasource1/fhir
+    proxyTo: https://datasource1.hl7-your-health.projects.alexandrainst.dk/fhir
+    auth: basic
     profiles: {}
 
 # Where converted data can be sent, and what each resource type is validated
 # against there (same mapping as the CLI validators, see ../README.md).
+# The German targets are the local containers (hapi-de-hospital, hapi-de-gp), started by ../dev.sh.
+# For the shared ones instead: /datasource2/fhir and /datasource3/fhir with auth: basic.
 targets:
   - id: de-hospital
     label: German hospital (ISiK / MII)
-    url: /hapi-de-hospital/fhir
+    url: /local-de-hospital/fhir
     proxyTo: http://localhost:28081/fhir
     profiles:
       Patient: https://gematik.de/fhir/isik/StructureDefinition/ISiKPatient
@@ -37,7 +42,7 @@ targets:
 
   - id: de-gp
     label: German GP in Flensburg (KBV)
-    url: /hapi-de-gp/fhir
+    url: /local-de-gp/fhir
     proxyTo: http://localhost:28082/fhir
     profiles:
       Patient: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Patient
