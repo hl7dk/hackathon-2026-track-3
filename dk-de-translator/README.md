@@ -65,8 +65,10 @@ With `.env` in place:
 ./dev.sh        # http://localhost:28090 (runs npm install the first time)
 ```
 
+http://localhost:28090/patients.html lists the patients on each server; click one to see their record.
+
 "Get my records" in the wallet looks up the patient by CPR on the Danish source and reads `Patient/$everything`, so the patient has to be on that server first. Alternatively, load a bundle file with the file picker.
 
 Validation uses `$validate` on the HAPI server you pick, so it needs the IGs loaded there. On a German server each resource is checked as if it claimed that server's profile, the same mapping as the CLI validators.
 
-Server URLs, profiles, the default patient and the share options are in `frontend/config.yml`. The page calls the servers as `/datasource1/fhir`, `/datasource2/fhir` and `/datasource3/fhir`; `npm run dev` proxies those to the shared servers and adds the credentials from `.env` (`auth: basic`), so they never reach the browser.
+Server URLs, profiles, the default patient and the share options are in `frontend/config.yml`. The page calls the Danish source as `/datasource1/fhir`, which `npm run dev` proxies to the shared server, adding the credentials from `.env` (`auth: basic`) so they never reach the browser. The German targets are the local servers started by `./dev.sh`, called as `/local-de-hospital/fhir` and `/local-de-gp/fhir` and proxied to ports 28081 and 28082 without credentials. To send to the shared German servers instead, point them at `datasource2` and `datasource3` with `auth: basic` (see the comment above `targets` in `config.yml`).

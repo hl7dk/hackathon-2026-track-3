@@ -62,16 +62,19 @@ function PatientRow({ patient, baseUrl }) {
       {open && (
         <tr className="border-b border-slate-200 bg-slate-50">
           <td colSpan={6} className="px-4 py-3">
-            <Status message={message} />
-            {record && (
-              <>
-                <p className="mb-3 text-sm text-slate-600">
-                  {counts.length ? counts.map(([t, n]) => `${n} ${t}`).join(' · ') : 'Only the Patient resource, nothing else.'}
-                </p>
-                <RecordView bundle={record} />
-                <Json value={record} />
-              </>
-            )}
+            {/* w-0 min-w-full: the record fills the row without widening the table (long raw FHIR lines scroll inside). */}
+            <div className="w-0 min-w-full">
+              <Status message={message} />
+              {record && (
+                <>
+                  <p className="mb-3 text-sm text-slate-600">
+                    {counts.length ? counts.map(([t, n]) => `${n} ${t}`).join(' · ') : 'Only the Patient resource, nothing else.'}
+                  </p>
+                  <RecordView bundle={record} />
+                  <Json value={record} />
+                </>
+              )}
+            </div>
           </td>
         </tr>
       )}
