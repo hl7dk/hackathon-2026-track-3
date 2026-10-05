@@ -1,38 +1,15 @@
 #!/bin/sh
-# Starts the HAPI servers, loads any Danish bundles from data/in/ into hapi-dk,
-# then runs the frontend dev server. Ctrl-C stops the frontend only (http://localhost:28090);
-# `docker compose down` stops the servers (and wipes their data).
+# Runs the frontend dev server (http://localhost:28090) against the servers in frontend/config.yml:
+# the shared Danish source (datasource1, logging in with USERNAME/PASSWORD from .env) and the
+# local German HAPI servers (hapi-de-hospital on 28081, hapi-de-gp on 28082), started here.
+# The local servers keep data in memory and stay up after this exits: docker compose --profile local down
 set -e
 cd "$(dirname "$0")"
 
-docker compose up -d hapi-dk hapi-de-hospital hapi-de-gp
+[ -f .env ] || { echo "Missing .env with USERNAME=... and PASSWORD=... for the datasource servers" >&2; exit 1; }
 
-# The first start installs the IG packages and can take several minutes.
-for port in 28080 28081 28082; do
-  base="http://localhost:$port/fhir"
-  i=0
-  until curl -sf "$base/metadata" > /dev/null; do
-    i=$((i + 1))
-    if [ "$i" -gt 120 ]; then
-      echo "No FHIR server at $base after 10 minutes. Check: docker compose logs" >&2
-      exit 1
-    fi
-    [ $((i % 6)) -eq 1 ] && echo "waiting for $base ..."
-    sleep 5
-  done
-  echo "up: $base"
-done
-
-# Transaction bundles named *-dk-bundle.json go to the Danish server,
-# unless it already has patients (servers were still running from before).
-patients=$(curl -s "http://localhost:28080/fhir/Patient?_summary=count" | sed -n 's/.*"total": *\([0-9]*\).*/\1/p')
-[ "${patients:-0}" -gt 0 ] && echo "hapi-dk already has $patients patients, not loading data/in/"
-[ "${patients:-0}" -gt 0 ] || for f in data/in/*-dk-bundle.json; do
-  [ -e "$f" ] || { echo "no data/in/*-dk-bundle.json to load; use the file picker in the frontend"; break; }
-  code=$(curl -s -o /dev/null -w '%{http_code}' -X POST http://localhost:28080/fhir \
-    -H 'Content-Type: application/fhir+json' --data-binary "@$f")
-  echo "$code  loaded $(basename "$f")"
-done
+# The first start takes a few minutes while the IG packages install; until then the German servers return errors.
+docker compose --profile local up -d hapi-de-hospital hapi-de-gp
 
 cd frontend
 [ -d node_modules ] || npm install

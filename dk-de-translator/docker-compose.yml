@@ -1,4 +1,6 @@
 services:
+  # Local HAPI servers, opt-in: docker compose --profile local up -d
+  # The app uses the shared datasource servers by default (frontend/config.yml).
   hapi-dk:
     image: hapiproject/hapi:v8.12.0-1
     ports:
@@ -7,6 +9,7 @@ services:
       SPRING_CONFIG_ADDITIONAL_LOCATION: file:/configs/dk.yaml
     volumes:
       - ./hapi/dk.yaml:/configs/dk.yaml:ro
+    profiles: ["local"]
 
   hapi-de-hospital:
     image: hapiproject/hapi:v8.12.0-1
@@ -16,6 +19,7 @@ services:
       SPRING_CONFIG_ADDITIONAL_LOCATION: file:/configs/de-hospital.yaml
     volumes:
       - ./hapi/de-hospital.yaml:/configs/de-hospital.yaml:ro
+    profiles: ["local"]
 
   hapi-de-gp:
     image: hapiproject/hapi:v8.12.0-1
@@ -25,6 +29,7 @@ services:
       SPRING_CONFIG_ADDITIONAL_LOCATION: file:/configs/de-gp.yaml
     volumes:
       - ./hapi/de-gp.yaml:/configs/de-gp.yaml:ro
+    profiles: ["local"]
 
   # Two validators because hospital and GP use different de.basisprofil.r4 versions
   validator-hospital:
