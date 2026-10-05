@@ -1,0 +1,688 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280",
+      "resource": {
+        "resourceType": "Patient",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Patient"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Max Mustermann, male, born 1978-04-12, KVNR M123456785</div>"
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://fhir.de/CodeSystem/identifier-type-de-basis",
+                  "code": "KVZ10"
+                }
+              ]
+            },
+            "system": "http://fhir.de/sid/gkv/kvid-10",
+            "value": "M123456785"
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "https://praxis-flensburg.example.org/fhir/sid/patientennummer",
+            "value": "P-4711"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Mustermann",
+            "given": [
+              "Max"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1978-04-12",
+        "address": [
+          {
+            "type": "both",
+            "line": [
+              "Große Straße 12"
+            ],
+            "city": "Flensburg",
+            "postalCode": "24937",
+            "country": "DE"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:5306de0d-f63d-541e-814e-caf4d6043939",
+      "resource": {
+        "resourceType": "Condition",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Bluthochdruck (I10.90)</div>"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
+                  "valueCoding": {
+                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
+                    "code": "G",
+                    "display": "gesicherte Diagnose"
+                  }
+                }
+              ],
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2026",
+              "code": "I10.90",
+              "display": "Essentielle Hypertonie, nicht näher bezeichnet: Ohne Angabe einer hypertensiven Krise"
+            }
+          ],
+          "text": "Bluthochdruck"
+        },
+        "subject": {
+          "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
+        },
+        "onsetDateTime": "2015-03-02",
+        "recordedDate": "2015-03-02"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b8b2e1e5-e804-58a6-a5c5-bc522e744d9a",
+      "resource": {
+        "resourceType": "Condition",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Typ-2-Diabetes (E11.90)</div>"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
+                  "valueCoding": {
+                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
+                    "code": "G",
+                    "display": "gesicherte Diagnose"
+                  }
+                }
+              ],
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2026",
+              "code": "E11.90",
+              "display": "Diabetes mellitus, Typ 2: Ohne Komplikationen: Nicht als entgleist bezeichnet"
+            }
+          ],
+          "text": "Typ-2-Diabetes"
+        },
+        "subject": {
+          "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
+        },
+        "onsetDateTime": "2019-11-18",
+        "recordedDate": "2019-11-18"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:33ff73c3-5959-5edf-a48b-8a93cbf0dd3a",
+      "resource": {
+        "resourceType": "Condition",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Kniearthrose rechts (M17.1)</div>"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
+                  "valueCoding": {
+                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
+                    "code": "G",
+                    "display": "gesicherte Diagnose"
+                  }
+                },
+                {
+                  "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
+                  "valueCoding": {
+                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION",
+                    "code": "R",
+                    "display": "rechts"
+                  }
+                }
+              ],
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2026",
+              "code": "M17.1",
+              "display": "Sonstige primäre Gonarthrose"
+            }
+          ],
+          "text": "Kniearthrose rechts"
+        },
+        "subject": {
+          "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
+        },
+        "onsetDateTime": "2023-06-05",
+        "recordedDate": "2023-06-05"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:6e8249aa-af3b-5ed5-9678-fb6f16e59f31",
+      "resource": {
+        "resourceType": "Condition",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Verdacht auf Reflux (K21.9)</div>"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "provisional",
+              "display": "Provisional"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
+                  "valueCoding": {
+                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
+                    "code": "V",
+                    "display": "Verdacht auf"
+                  }
+                }
+              ],
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2026",
+              "code": "K21.9",
+              "display": "Gastroösophageale Refluxkrankheit ohne Ösophagitis"
+            }
+          ],
+          "text": "Verdacht auf Reflux"
+        },
+        "subject": {
+          "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
+        },
+        "onsetDateTime": "2026-08-20",
+        "recordedDate": "2026-08-20"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a5e7b0c8-aaef-5889-92c6-fd1e2d8887bc",
+      "resource": {
+        "resourceType": "Medication",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Medication"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Ramipril 5 mg Tabletten (PZN 12345678, ATC C09AA05)</div>"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/ifa/pzn",
+              "code": "12345678",
+              "display": "Ramipril 5 mg Tabletten"
+            },
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/atc",
+              "version": "2026",
+              "code": "C09AA05",
+              "display": "Ramipril"
+            }
+          ],
+          "text": "Ramipril 5 mg Tabletten"
+        },
+        "form": {
+          "text": "Tabletten"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Medication"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8a12fc34-126f-50a4-b383-12a3bb292550",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_MedicationStatement"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Ramipril 5 mg Tabletten, 1-0-0</div>"
+        },
+        "status": "active",
+        "medicationReference": {
+          "reference": "urn:uuid:a5e7b0c8-aaef-5889-92c6-fd1e2d8887bc",
+          "display": "Ramipril 5 mg Tabletten"
+        },
+        "subject": {
+          "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
+        },
+        "effectivePeriod": {
+          "start": "2026-01-01"
+        },
+        "dosage": [
+          {
+            "text": "1-0-0",
+            "asNeededBoolean": false
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4d47ddc5-75e7-517a-9d50-77129828a4f4",
+      "resource": {
+        "resourceType": "Medication",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Medication"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Metformin 1000 mg Filmtabletten (PZN 23456783, ATC A10BA02)</div>"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/ifa/pzn",
+              "code": "23456783",
+              "display": "Metformin 1000 mg Filmtabletten"
+            },
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/atc",
+              "version": "2026",
+              "code": "A10BA02",
+              "display": "Metformin"
+            }
+          ],
+          "text": "Metformin 1000 mg Filmtabletten"
+        },
+        "form": {
+          "text": "Filmtabletten"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Medication"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ad21e610-7c8b-506c-bfad-4603d397598b",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_MedicationStatement"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Metformin 1000 mg Filmtabletten, 1-0-1</div>"
+        },
+        "status": "active",
+        "medicationReference": {
+          "reference": "urn:uuid:4d47ddc5-75e7-517a-9d50-77129828a4f4",
+          "display": "Metformin 1000 mg Filmtabletten"
+        },
+        "subject": {
+          "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
+        },
+        "effectivePeriod": {
+          "start": "2026-01-01"
+        },
+        "dosage": [
+          {
+            "text": "1-0-1",
+            "asNeededBoolean": false
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b6027396-39e4-57ed-9eda-27a5df8d7964",
+      "resource": {
+        "resourceType": "Medication",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Medication"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Ibuprofen 600 mg Filmtabletten (PZN 34567899, ATC M01AE01)</div>"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/ifa/pzn",
+              "code": "34567899",
+              "display": "Ibuprofen 600 mg Filmtabletten"
+            },
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/atc",
+              "version": "2026",
+              "code": "M01AE01",
+              "display": "Ibuprofen"
+            }
+          ],
+          "text": "Ibuprofen 600 mg Filmtabletten"
+        },
+        "form": {
+          "text": "Filmtabletten"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Medication"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b337b71e-ba56-5a8f-b991-f620fd9f67b7",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_MedicationStatement"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Ibuprofen 600 mg Filmtabletten, bei Bedarf 1 Tablette, höchstens 3 täglich</div>"
+        },
+        "status": "active",
+        "medicationReference": {
+          "reference": "urn:uuid:b6027396-39e4-57ed-9eda-27a5df8d7964",
+          "display": "Ibuprofen 600 mg Filmtabletten"
+        },
+        "subject": {
+          "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
+        },
+        "effectivePeriod": {
+          "start": "2026-01-01"
+        },
+        "dosage": [
+          {
+            "text": "bei Bedarf 1 Tablette, höchstens 3 täglich",
+            "asNeededBoolean": true
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:e349eed5-fe0f-50a9-b718-b0558a9ecd2a",
+      "resource": {
+        "resourceType": "Medication",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Medication"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Pantoprazol 20 mg magensaftresistente Tabletten (PZN 45678917, ATC A02BC02)</div>"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/ifa/pzn",
+              "code": "45678917",
+              "display": "Pantoprazol 20 mg magensaftresistente Tabletten"
+            },
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/atc",
+              "version": "2026",
+              "code": "A02BC02",
+              "display": "Pantoprazol"
+            }
+          ],
+          "text": "Pantoprazol 20 mg magensaftresistente Tabletten"
+        },
+        "form": {
+          "text": "magensaftresistente Tabletten"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Medication"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:40896347-65a3-5dc4-995d-71e41913db97",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_MedicationStatement"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Pantoprazol 20 mg magensaftresistente Tabletten, 1-0-0 vor dem Frühstück</div>"
+        },
+        "status": "active",
+        "medicationReference": {
+          "reference": "urn:uuid:e349eed5-fe0f-50a9-b718-b0558a9ecd2a",
+          "display": "Pantoprazol 20 mg magensaftresistente Tabletten"
+        },
+        "subject": {
+          "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
+        },
+        "effectivePeriod": {
+          "start": "2026-01-01"
+        },
+        "dosage": [
+          {
+            "text": "1-0-0 vor dem Frühstück",
+            "asNeededBoolean": false
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:159f103a-eba1-5e81-a78e-1bbcc4eec877",
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "meta": {
+          "profile": [
+            "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_AllergyIntolerance"
+          ]
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Allergie: Birkenpollen (confirmed)</div>"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+              "version": "1.0.1",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+              "version": "1.0.1",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "type": "allergy",
+        "category": [
+          "environment"
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "version": "http://snomed.info/sct/11000274103/version/20260515",
+              "code": "256262001",
+              "display": "Betula pendula pollen"
+            }
+          ],
+          "text": "Birkenpollen"
+        },
+        "patient": {
+          "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
+        },
+        "recordedDate": "2016-04-20"
+      },
+      "request": {
+        "method": "POST",
+        "url": "AllergyIntolerance"
+      }
+    }
+  ]
+}
