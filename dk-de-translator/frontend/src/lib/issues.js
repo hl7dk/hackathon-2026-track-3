@@ -3,17 +3,18 @@
 // assign it, e.g. its own patient number). Matched on the validator's message, so only errors are used.
 
 // Errors the patient can close: question, input type, and how the answer goes into the resource.
+// partialDate: a FHIR date as precise as the patient remembers it, 2019, 2019-03 or 2019-03-14.
 const ASK = [
   {
     match: /Condition\.recordedDate: minimum required/,
     question: 'When was this diagnosis made?',
-    input: 'date',
+    input: 'partialDate',
     apply: (r, v) => { r.recordedDate = v; },
   },
   {
     match: /MedicationStatement\.effective\[x\]: minimum required/,
     question: 'Since when have you been taking this?',
-    input: 'date',
+    input: 'partialDate',
     apply: (r, v) => { r.effectivePeriod = { start: v }; },
   },
 ];
@@ -23,6 +24,10 @@ const RECEIVER = [
   { match: /Patient\.identifier:Patientennummer/, note: 'The hospital assigns its own patient number (Patientennummer) on admission.' },
   { match: /isik-con1/, note: 'The hospital links each diagnosis to its own encounter (Fall) when it documents it.' },
 ];
+
+const PARTIAL_DATE = /^\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?)?$/;
+// Well formed and not in the future (compared as text, which works for all three precisions).
+export const validPartialDate = (v) => PARTIAL_DATE.test(v) && v <= new Date().toISOString().slice(0, v.length);
 
 export const isError = (i) => i.severity === 'error' || i.severity === 'fatal';
 export const message = (i) => i.diagnostics ?? i.details?.text ?? '';

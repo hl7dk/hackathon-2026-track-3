@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { SYSTEM_LABELS } from '../lib/config.js';
 import { describe } from '../lib/display.js';
-import { classify, isError, message as issueText } from '../lib/issues.js';
+import { classify, isError, message as issueText, validPartialDate } from '../lib/issues.js';
 import { submit } from '../lib/submit.js';
 import { validateBundle } from '../lib/validate.js';
 import { Button, Card, Status, inputClass, runStep } from './ui.jsx';
@@ -30,14 +30,22 @@ function Section({ tone, title, count, children }) {
 
 function Question({ item, busy, onAnswer }) {
   const [value, setValue] = useState('');
+  const valid = validPartialDate(value);
   return (
     <li className="flex flex-wrap items-center gap-2">
       <span className="min-w-56 flex-1">
         <strong>{describe(item.resource)}</strong>: {item.question}
         <span className="block text-xs text-slate-500">{short(item.issue)}</span>
       </span>
-      <input type={item.input} className={inputClass} value={value} onChange={(e) => setValue(e.target.value)} />
-      <Button primary disabled={busy || !value} onClick={() => onAnswer(item, value)}>Add</Button>
+      <input
+        className={`${inputClass} w-44`}
+        placeholder="2019, 2019-03 or 2019-03-14"
+        value={value}
+        onChange={(e) => setValue(e.target.value.trim())}
+        aria-invalid={!!value && !valid}
+      />
+      <Button primary disabled={busy || !valid} onClick={() => onAnswer(item, value)}>Add</Button>
+      {value && !valid && <span className="w-full text-right text-xs text-red-700">A year, year-month or full date, not in the future.</span>}
     </li>
   );
 }
@@ -108,7 +116,7 @@ export default function FixPanel({ conversion, converted, setConverted }) {
                 <li key={`t${i}`}>✓ {describe(r.resource)}: <code className="text-xs">{coding(r.from)}</code> → <code className="text-xs">{coding(r.to)}</code></li>
               ))}
               {c.fixedByMap.map((f, i) => (
-                <li key={`f${i}`}>✓ {describe(f.resource)}: <span className="text-slate-600">{short(f.issue)}</span></li>
+                <li key={`f${i}`}>✓ {describe(f.resource)}: <span className="text-slate-600">was: {short(f.issue)}</span></li>
               ))}
             </Section>
 

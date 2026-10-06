@@ -4,17 +4,24 @@
 // server: an entry from sources or targets in config.yml.
 // A resource with a profile for its type in server.profiles is checked as if it
 // claimed that profile (meta.profile replaced), the same mapping as the CLI validators.
+// For a type with a profile per code (Observation), the profile of its first matching code.
 export async function validateBundle(bundle, server, onProgress = () => {}) {
   const resources = (bundle.entry ?? []).map((e) => e.resource);
   const results = [];
   for (const [i, resource] of resources.entries()) {
     onProgress(i + 1, resources.length);
-    const profile = server.profiles?.[resource.resourceType];
+    const profile = profileFor(server, resource);
     const body = structuredClone(resource);
     if (profile) body.meta = { ...body.meta, profile: [profile] };
     results.push({ resource, profile: profile ?? resource.meta?.profile?.[0] ?? null, issues: await validateOne(body, server.url) });
   }
   return results;
+}
+
+function profileFor(server, resource) {
+  const byType = server.profiles?.[resource.resourceType];
+  if (!byType || typeof byType === 'string') return byType;
+  return resource.code?.coding?.map((c) => byType[c.code]).find(Boolean);
 }
 
 async function validateOne(resource, baseUrl) {
