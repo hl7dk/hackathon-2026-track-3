@@ -56,7 +56,12 @@ export default function App() {
 
       <div className={`grid items-start gap-4 ${session ? 'lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]' : ''}`}>
         <WalletPanel session={session} onSession={setSession} record={record} onRecord={onRecord} />
-        {session && <EventLog since={session.since ?? 0} />}
+        {session && (
+          // On wide screens the log takes the wallet's height and scrolls, instead of growing the row.
+          <div className="relative self-stretch lg:min-h-80">
+            <div className="lg:absolute lg:inset-0"><EventLog since={session.since ?? 0} /></div>
+          </div>
+        )}
       </div>
 
       {record && (

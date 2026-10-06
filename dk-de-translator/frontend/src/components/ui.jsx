@@ -10,10 +10,10 @@ export function PlaceholderBadge() {
 }
 
 // placeholder: the card stands in for what the wallet / consent group builds.
-export function Card({ title, step, actions, placeholder, children }) {
+export function Card({ title, step, actions, placeholder, className = '', children }) {
   const frame = placeholder ? 'border-2 border-dashed border-amber-400' : 'border border-slate-200';
   return (
-    <section className={`rounded-lg bg-white p-5 shadow-sm ${frame}`}>
+    <section className={`rounded-lg bg-white p-5 shadow-sm ${frame} ${className}`}>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
           {step && <span className="grid size-6 place-items-center rounded-full bg-blue-700 text-sm text-white">{step}</span>}

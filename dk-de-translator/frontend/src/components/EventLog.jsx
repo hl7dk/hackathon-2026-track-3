@@ -45,11 +45,11 @@ export default function EventLog({ since }) {
   }, [shown.length]);
 
   return (
-    <Card title="Behind the scenes" actions={<Button onClick={() => setClearedAt(shown.at(-1)?.at ?? clearedAt)}>Clear</Button>}>
+    <Card className="flex h-full flex-col" title="Behind the scenes" actions={<Button onClick={() => setClearedAt(shown.at(-1)?.at ?? clearedAt)}>Clear</Button>}>
       <p className="mb-3 text-xs text-slate-500">
         Live events from the issuer, the verifier and this app.{!connected && ' Not connected: is the dev server running?'}
       </p>
-      <ol className="max-h-[28rem] space-y-1.5 overflow-auto text-sm">
+      <ol className="max-h-[28rem] min-h-0 flex-1 space-y-1.5 overflow-auto text-sm lg:max-h-none">
         {shown.map((e) => (
           <li key={`${e.at}-${e.text}`} className="flex gap-2">
             <span className="shrink-0 font-mono text-xs leading-5 text-slate-400">{new Date(e.at).toLocaleTimeString()}</span>
