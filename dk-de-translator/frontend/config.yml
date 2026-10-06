@@ -27,13 +27,15 @@ sources:
 
 # Where converted data can be sent, and what each resource type is validated
 # against there (same mapping as the CLI validators, see ../README.md).
-# The German targets are the local containers (hapi-de-hospital, hapi-de-gp), started by ../dev.sh.
-# For the shared ones instead: /datasource2/fhir and /datasource3/fhir with auth: basic.
+# The German targets are the shared servers datasource2 (hospital) and datasource3 (GP).
+# For the local containers instead (../dev.sh): /local-de-hospital/fhir and /local-de-gp/fhir,
+# proxyTo http://localhost:28081/fhir and 28082, without auth.
 targets:
   - id: de-hospital
     label: German hospital (ISiK / MII)
-    url: /local-de-hospital/fhir
-    proxyTo: http://localhost:28081/fhir
+    url: /datasource2/fhir
+    proxyTo: https://datasource2.hl7-your-health.projects.alexandrainst.dk/fhir
+    auth: basic
     profiles:
       Patient: https://gematik.de/fhir/isik/StructureDefinition/ISiKPatient
       Condition: https://gematik.de/fhir/isik/StructureDefinition/ISiKDiagnose
@@ -42,8 +44,9 @@ targets:
 
   - id: de-gp
     label: German GP in Flensburg (KBV)
-    url: /local-de-gp/fhir
-    proxyTo: http://localhost:28082/fhir
+    url: /datasource3/fhir
+    proxyTo: https://datasource3.hl7-your-health.projects.alexandrainst.dk/fhir
+    auth: basic
     profiles:
       Patient: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Patient
       Condition: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis

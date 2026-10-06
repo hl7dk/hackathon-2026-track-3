@@ -17,7 +17,7 @@ PASSWORD=...
 
 ### Local servers (optional)
 
-Three local HAPI servers with the same IGs, in the `local` compose profile:
+Local HAPI servers in the `local` compose profile: three with the same IGs as the shared ones, and one for the ConceptMaps (see Translator below):
 
 | Server | Port | IGs |
 |---|---|---|
