@@ -6,6 +6,7 @@
       "fullUrl": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280",
       "resource": {
         "resourceType": "Patient",
+        "id": "max-gp-patient",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Patient"
@@ -66,14 +67,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "Patient"
+        "method": "PUT",
+        "url": "Patient/max-gp-patient"
       }
     },
     {
       "fullUrl": "urn:uuid:5306de0d-f63d-541e-814e-caf4d6043939",
       "resource": {
         "resourceType": "Condition",
+        "id": "max-gp-condition-0",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis"
@@ -81,7 +83,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Bluthochdruck (I10.90)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Essentielle Hypertonie, nicht näher bezeichnet ohne Angabe einer hypertensiven Krise (I10.90)</div>"
         },
         "clinicalStatus": {
           "coding": [
@@ -117,10 +119,10 @@
               "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
               "version": "2026",
               "code": "I10.90",
-              "display": "Essentielle Hypertonie, nicht näher bezeichnet: Ohne Angabe einer hypertensiven Krise"
+              "display": "Essentielle Hypertonie, nicht näher bezeichnet ohne Angabe einer hypertensiven Krise"
             }
           ],
-          "text": "Bluthochdruck"
+          "text": "Essentielle Hypertonie, nicht näher bezeichnet ohne Angabe einer hypertensiven Krise"
         },
         "subject": {
           "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
@@ -129,14 +131,15 @@
         "recordedDate": "2015-03-02"
       },
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/max-gp-condition-0"
       }
     },
     {
       "fullUrl": "urn:uuid:b8b2e1e5-e804-58a6-a5c5-bc522e744d9a",
       "resource": {
         "resourceType": "Condition",
+        "id": "max-gp-condition-1",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis"
@@ -144,7 +147,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Typ-2-Diabetes (E11.90)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Diabetes mellitus, Typ 2 ohne Komplikationen nicht als entgleist bezeichnet (E11.90)</div>"
         },
         "clinicalStatus": {
           "coding": [
@@ -180,10 +183,10 @@
               "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
               "version": "2026",
               "code": "E11.90",
-              "display": "Diabetes mellitus, Typ 2: Ohne Komplikationen: Nicht als entgleist bezeichnet"
+              "display": "Diabetes mellitus, Typ 2 ohne Komplikationen nicht als entgleist bezeichnet"
             }
           ],
-          "text": "Typ-2-Diabetes"
+          "text": "Diabetes mellitus, Typ 2 ohne Komplikationen nicht als entgleist bezeichnet"
         },
         "subject": {
           "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
@@ -192,14 +195,15 @@
         "recordedDate": "2019-11-18"
       },
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/max-gp-condition-1"
       }
     },
     {
       "fullUrl": "urn:uuid:33ff73c3-5959-5edf-a48b-8a93cbf0dd3a",
       "resource": {
         "resourceType": "Condition",
+        "id": "max-gp-condition-2",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis"
@@ -207,7 +211,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Kniearthrose rechts (M17.1)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Sonstige primäre Gonarthrose (M17.1)</div>"
         },
         "clinicalStatus": {
           "coding": [
@@ -254,7 +258,7 @@
               "display": "Sonstige primäre Gonarthrose"
             }
           ],
-          "text": "Kniearthrose rechts"
+          "text": "Sonstige primäre Gonarthrose"
         },
         "subject": {
           "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
@@ -263,14 +267,15 @@
         "recordedDate": "2023-06-05"
       },
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/max-gp-condition-2"
       }
     },
     {
       "fullUrl": "urn:uuid:6e8249aa-af3b-5ed5-9678-fb6f16e59f31",
       "resource": {
         "resourceType": "Condition",
+        "id": "max-gp-condition-3",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis"
@@ -278,7 +283,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Verdacht auf Reflux (K21.9)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Gastroösophageale Refluxkrankheit ohne Ösophagitis (K21.9)</div>"
         },
         "clinicalStatus": {
           "coding": [
@@ -317,7 +322,7 @@
               "display": "Gastroösophageale Refluxkrankheit ohne Ösophagitis"
             }
           ],
-          "text": "Verdacht auf Reflux"
+          "text": "Gastroösophageale Refluxkrankheit ohne Ösophagitis"
         },
         "subject": {
           "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
@@ -326,14 +331,15 @@
         "recordedDate": "2026-08-20"
       },
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/max-gp-condition-3"
       }
     },
     {
       "fullUrl": "urn:uuid:a5e7b0c8-aaef-5889-92c6-fd1e2d8887bc",
       "resource": {
         "resourceType": "Medication",
+        "id": "max-gp-medication-0",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Medication"
@@ -341,14 +347,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Ramipril 5 mg Tabletten (PZN 12345678, ATC C09AA05)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Ramipril 1A Pharma 5 mg Tabletten (PZN 00766759, ATC C09AA05)</div>"
         },
         "code": {
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/ifa/pzn",
-              "code": "12345678",
-              "display": "Ramipril 5 mg Tabletten"
+              "code": "00766759",
+              "display": "Ramipril 1A Pharma 5 mg Tabletten"
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
@@ -357,21 +363,22 @@
               "display": "Ramipril"
             }
           ],
-          "text": "Ramipril 5 mg Tabletten"
+          "text": "Ramipril 1A Pharma 5 mg Tabletten"
         },
         "form": {
           "text": "Tabletten"
         }
       },
       "request": {
-        "method": "POST",
-        "url": "Medication"
+        "method": "PUT",
+        "url": "Medication/max-gp-medication-0"
       }
     },
     {
       "fullUrl": "urn:uuid:8a12fc34-126f-50a4-b383-12a3bb292550",
       "resource": {
         "resourceType": "MedicationStatement",
+        "id": "max-gp-medicationstatement-0",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_MedicationStatement"
@@ -379,12 +386,12 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Ramipril 5 mg Tabletten, 1-0-0</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Ramipril 1A Pharma 5 mg Tabletten, 1-0-0</div>"
         },
         "status": "active",
         "medicationReference": {
           "reference": "urn:uuid:a5e7b0c8-aaef-5889-92c6-fd1e2d8887bc",
-          "display": "Ramipril 5 mg Tabletten"
+          "display": "Ramipril 1A Pharma 5 mg Tabletten"
         },
         "subject": {
           "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
@@ -400,14 +407,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "MedicationStatement"
+        "method": "PUT",
+        "url": "MedicationStatement/max-gp-medicationstatement-0"
       }
     },
     {
       "fullUrl": "urn:uuid:4d47ddc5-75e7-517a-9d50-77129828a4f4",
       "resource": {
         "resourceType": "Medication",
+        "id": "max-gp-medication-1",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Medication"
@@ -415,14 +423,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Metformin 1000 mg Filmtabletten (PZN 23456783, ATC A10BA02)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Metformin Heumann 1000 mg Filmtabletten (PZN 18400898, ATC A10BA02)</div>"
         },
         "code": {
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/ifa/pzn",
-              "code": "23456783",
-              "display": "Metformin 1000 mg Filmtabletten"
+              "code": "18400898",
+              "display": "Metformin Heumann 1000 mg Filmtabletten"
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
@@ -431,21 +439,22 @@
               "display": "Metformin"
             }
           ],
-          "text": "Metformin 1000 mg Filmtabletten"
+          "text": "Metformin Heumann 1000 mg Filmtabletten"
         },
         "form": {
           "text": "Filmtabletten"
         }
       },
       "request": {
-        "method": "POST",
-        "url": "Medication"
+        "method": "PUT",
+        "url": "Medication/max-gp-medication-1"
       }
     },
     {
       "fullUrl": "urn:uuid:ad21e610-7c8b-506c-bfad-4603d397598b",
       "resource": {
         "resourceType": "MedicationStatement",
+        "id": "max-gp-medicationstatement-1",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_MedicationStatement"
@@ -453,12 +462,12 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Metformin 1000 mg Filmtabletten, 1-0-1</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Metformin Heumann 1000 mg Filmtabletten, 1-0-1</div>"
         },
         "status": "active",
         "medicationReference": {
           "reference": "urn:uuid:4d47ddc5-75e7-517a-9d50-77129828a4f4",
-          "display": "Metformin 1000 mg Filmtabletten"
+          "display": "Metformin Heumann 1000 mg Filmtabletten"
         },
         "subject": {
           "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
@@ -474,14 +483,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "MedicationStatement"
+        "method": "PUT",
+        "url": "MedicationStatement/max-gp-medicationstatement-1"
       }
     },
     {
       "fullUrl": "urn:uuid:b6027396-39e4-57ed-9eda-27a5df8d7964",
       "resource": {
         "resourceType": "Medication",
+        "id": "max-gp-medication-2",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Medication"
@@ -489,14 +499,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Ibuprofen 600 mg Filmtabletten (PZN 34567899, ATC M01AE01)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Ibuprofen PUREN 600 mg Filmtabletten (PZN 13816720, ATC M01AE01)</div>"
         },
         "code": {
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/ifa/pzn",
-              "code": "34567899",
-              "display": "Ibuprofen 600 mg Filmtabletten"
+              "code": "13816720",
+              "display": "Ibuprofen PUREN 600 mg Filmtabletten"
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
@@ -505,21 +515,22 @@
               "display": "Ibuprofen"
             }
           ],
-          "text": "Ibuprofen 600 mg Filmtabletten"
+          "text": "Ibuprofen PUREN 600 mg Filmtabletten"
         },
         "form": {
           "text": "Filmtabletten"
         }
       },
       "request": {
-        "method": "POST",
-        "url": "Medication"
+        "method": "PUT",
+        "url": "Medication/max-gp-medication-2"
       }
     },
     {
       "fullUrl": "urn:uuid:b337b71e-ba56-5a8f-b991-f620fd9f67b7",
       "resource": {
         "resourceType": "MedicationStatement",
+        "id": "max-gp-medicationstatement-2",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_MedicationStatement"
@@ -527,12 +538,12 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Ibuprofen 600 mg Filmtabletten, bei Bedarf 1 Tablette, höchstens 3 täglich</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Ibuprofen PUREN 600 mg Filmtabletten, bei Bedarf 1 Tablette, höchstens 3 täglich</div>"
         },
         "status": "active",
         "medicationReference": {
           "reference": "urn:uuid:b6027396-39e4-57ed-9eda-27a5df8d7964",
-          "display": "Ibuprofen 600 mg Filmtabletten"
+          "display": "Ibuprofen PUREN 600 mg Filmtabletten"
         },
         "subject": {
           "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
@@ -548,14 +559,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "MedicationStatement"
+        "method": "PUT",
+        "url": "MedicationStatement/max-gp-medicationstatement-2"
       }
     },
     {
       "fullUrl": "urn:uuid:e349eed5-fe0f-50a9-b718-b0558a9ecd2a",
       "resource": {
         "resourceType": "Medication",
+        "id": "max-gp-medication-3",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Medication"
@@ -563,14 +575,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Pantoprazol 20 mg magensaftresistente Tabletten (PZN 45678917, ATC A02BC02)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Pantoprazol beta 20 mg acid magensaftresistente Tabletten (PZN 15577308, ATC A02BC02)</div>"
         },
         "code": {
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/ifa/pzn",
-              "code": "45678917",
-              "display": "Pantoprazol 20 mg magensaftresistente Tabletten"
+              "code": "15577308",
+              "display": "Pantoprazol beta 20 mg acid magensaftresistente Tabletten"
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
@@ -579,21 +591,22 @@
               "display": "Pantoprazol"
             }
           ],
-          "text": "Pantoprazol 20 mg magensaftresistente Tabletten"
+          "text": "Pantoprazol beta 20 mg acid magensaftresistente Tabletten"
         },
         "form": {
           "text": "magensaftresistente Tabletten"
         }
       },
       "request": {
-        "method": "POST",
-        "url": "Medication"
+        "method": "PUT",
+        "url": "Medication/max-gp-medication-3"
       }
     },
     {
       "fullUrl": "urn:uuid:40896347-65a3-5dc4-995d-71e41913db97",
       "resource": {
         "resourceType": "MedicationStatement",
+        "id": "max-gp-medicationstatement-3",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_MedicationStatement"
@@ -601,12 +614,12 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Pantoprazol 20 mg magensaftresistente Tabletten, 1-0-0 vor dem Frühstück</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Pantoprazol beta 20 mg acid magensaftresistente Tabletten, 1-0-0 vor dem Frühstück</div>"
         },
         "status": "active",
         "medicationReference": {
           "reference": "urn:uuid:e349eed5-fe0f-50a9-b718-b0558a9ecd2a",
-          "display": "Pantoprazol 20 mg magensaftresistente Tabletten"
+          "display": "Pantoprazol beta 20 mg acid magensaftresistente Tabletten"
         },
         "subject": {
           "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
@@ -622,14 +635,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "MedicationStatement"
+        "method": "PUT",
+        "url": "MedicationStatement/max-gp-medicationstatement-3"
       }
     },
     {
       "fullUrl": "urn:uuid:159f103a-eba1-5e81-a78e-1bbcc4eec877",
       "resource": {
         "resourceType": "AllergyIntolerance",
+        "id": "max-gp-allergyintolerance-0",
         "meta": {
           "profile": [
             "https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_AllergyIntolerance"
@@ -637,7 +651,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Allergie: Birkenpollen (confirmed)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Allergie: Allergie gegen Baumpollen (confirmed)</div>"
         },
         "clinicalStatus": {
           "coding": [
@@ -668,11 +682,11 @@
             {
               "system": "http://snomed.info/sct",
               "version": "http://snomed.info/sct/11000274103/version/20260515",
-              "code": "256262001",
-              "display": "Betula pendula pollen"
+              "code": "419263009",
+              "display": "Allergy to tree pollen"
             }
           ],
-          "text": "Birkenpollen"
+          "text": "Allergie gegen Baumpollen"
         },
         "patient": {
           "reference": "urn:uuid:d5d24431-f2d0-5bd8-9d13-8b229624d280"
@@ -680,8 +694,8 @@
         "recordedDate": "2016-04-20"
       },
       "request": {
-        "method": "POST",
-        "url": "AllergyIntolerance"
+        "method": "PUT",
+        "url": "AllergyIntolerance/max-gp-allergyintolerance-0"
       }
     }
   ]

@@ -6,6 +6,7 @@
       "fullUrl": "urn:uuid:970f79f0-dd34-554a-954d-b56c1c51c639",
       "resource": {
         "resourceType": "Patient",
+        "id": "max-hospital-patient",
         "meta": {
           "profile": [
             "https://gematik.de/fhir/isik/StructureDefinition/ISiKPatient"
@@ -66,14 +67,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "Patient"
+        "method": "PUT",
+        "url": "Patient/max-hospital-patient"
       }
     },
     {
       "fullUrl": "urn:uuid:f51578d1-75ce-53ad-b462-96782e73b624",
       "resource": {
         "resourceType": "Encounter",
+        "id": "max-hospital-encounter",
         "meta": {
           "profile": [
             "https://gematik.de/fhir/isik/StructureDefinition/ISiKKontaktGesundheitseinrichtung"
@@ -141,14 +143,15 @@
         }
       },
       "request": {
-        "method": "POST",
-        "url": "Encounter"
+        "method": "PUT",
+        "url": "Encounter/max-hospital-encounter"
       }
     },
     {
       "fullUrl": "urn:uuid:54dd8645-cf52-50a8-9172-0cc82ff3a257",
       "resource": {
         "resourceType": "Condition",
+        "id": "max-hospital-condition-0",
         "meta": {
           "profile": [
             "https://gematik.de/fhir/isik/StructureDefinition/ISiKDiagnose"
@@ -156,7 +159,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Bluthochdruck (I10.90)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Essentielle Hypertonie, nicht näher bezeichnet ohne Angabe einer hypertensiven Krise (I10.90)</div>"
         },
         "clinicalStatus": {
           "coding": [
@@ -192,10 +195,10 @@
               "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
               "version": "2026",
               "code": "I10.90",
-              "display": "Essentielle Hypertonie, nicht näher bezeichnet: Ohne Angabe einer hypertensiven Krise"
+              "display": "Essentielle Hypertonie, nicht näher bezeichnet ohne Angabe einer hypertensiven Krise"
             }
           ],
-          "text": "Bluthochdruck"
+          "text": "Essentielle Hypertonie, nicht näher bezeichnet ohne Angabe einer hypertensiven Krise"
         },
         "subject": {
           "reference": "urn:uuid:970f79f0-dd34-554a-954d-b56c1c51c639"
@@ -207,14 +210,15 @@
         "recordedDate": "2026-09-14"
       },
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/max-hospital-condition-0"
       }
     },
     {
       "fullUrl": "urn:uuid:907c05ce-9168-5f50-a499-41034eb57ac3",
       "resource": {
         "resourceType": "Condition",
+        "id": "max-hospital-condition-1",
         "meta": {
           "profile": [
             "https://gematik.de/fhir/isik/StructureDefinition/ISiKDiagnose"
@@ -222,7 +226,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Typ-2-Diabetes (E11.90)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Diabetes mellitus, Typ 2 ohne Komplikationen nicht als entgleist bezeichnet (E11.90)</div>"
         },
         "clinicalStatus": {
           "coding": [
@@ -258,10 +262,10 @@
               "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
               "version": "2026",
               "code": "E11.90",
-              "display": "Diabetes mellitus, Typ 2: Ohne Komplikationen: Nicht als entgleist bezeichnet"
+              "display": "Diabetes mellitus, Typ 2 ohne Komplikationen nicht als entgleist bezeichnet"
             }
           ],
-          "text": "Typ-2-Diabetes"
+          "text": "Diabetes mellitus, Typ 2 ohne Komplikationen nicht als entgleist bezeichnet"
         },
         "subject": {
           "reference": "urn:uuid:970f79f0-dd34-554a-954d-b56c1c51c639"
@@ -273,14 +277,15 @@
         "recordedDate": "2026-09-14"
       },
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/max-hospital-condition-1"
       }
     },
     {
       "fullUrl": "urn:uuid:ea197d2c-dc87-59a7-9bb4-84eadd6ba1a6",
       "resource": {
         "resourceType": "Condition",
+        "id": "max-hospital-condition-2",
         "meta": {
           "profile": [
             "https://gematik.de/fhir/isik/StructureDefinition/ISiKDiagnose"
@@ -288,7 +293,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Kniearthrose rechts (M17.1)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Sonstige primäre Gonarthrose (M17.1)</div>"
         },
         "clinicalStatus": {
           "coding": [
@@ -335,7 +340,7 @@
               "display": "Sonstige primäre Gonarthrose"
             }
           ],
-          "text": "Kniearthrose rechts"
+          "text": "Sonstige primäre Gonarthrose"
         },
         "subject": {
           "reference": "urn:uuid:970f79f0-dd34-554a-954d-b56c1c51c639"
@@ -347,14 +352,15 @@
         "recordedDate": "2026-09-14"
       },
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/max-hospital-condition-2"
       }
     },
     {
       "fullUrl": "urn:uuid:297a7f30-1dc7-580b-aea5-66a138dfa2c9",
       "resource": {
         "resourceType": "Condition",
+        "id": "max-hospital-condition-3",
         "meta": {
           "profile": [
             "https://gematik.de/fhir/isik/StructureDefinition/ISiKDiagnose"
@@ -362,7 +368,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Verdacht auf Reflux (K21.9)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Diagnose: Gastroösophageale Refluxkrankheit ohne Ösophagitis (K21.9)</div>"
         },
         "clinicalStatus": {
           "coding": [
@@ -401,7 +407,7 @@
               "display": "Gastroösophageale Refluxkrankheit ohne Ösophagitis"
             }
           ],
-          "text": "Verdacht auf Reflux"
+          "text": "Gastroösophageale Refluxkrankheit ohne Ösophagitis"
         },
         "subject": {
           "reference": "urn:uuid:970f79f0-dd34-554a-954d-b56c1c51c639"
@@ -413,14 +419,15 @@
         "recordedDate": "2026-09-14"
       },
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/max-hospital-condition-3"
       }
     },
     {
       "fullUrl": "urn:uuid:b8da3bd0-1865-5ef9-baaf-9546bd790f7c",
       "resource": {
         "resourceType": "Medication",
+        "id": "max-hospital-medication-0",
         "meta": {
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication"
@@ -428,14 +435,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Ramipril 5 mg Tabletten (PZN 12345678, ATC C09AA05)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Ramipril 1A Pharma 5 mg Tabletten (PZN 00766759, ATC C09AA05)</div>"
         },
         "code": {
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/ifa/pzn",
-              "code": "12345678",
-              "display": "Ramipril 5 mg Tabletten"
+              "code": "00766759",
+              "display": "Ramipril 1A Pharma 5 mg Tabletten"
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
@@ -444,7 +451,7 @@
               "display": "Ramipril"
             }
           ],
-          "text": "Ramipril 5 mg Tabletten"
+          "text": "Ramipril 1A Pharma 5 mg Tabletten"
         },
         "form": {
           "text": "Tabletten"
@@ -478,14 +485,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "Medication"
+        "method": "PUT",
+        "url": "Medication/max-hospital-medication-0"
       }
     },
     {
       "fullUrl": "urn:uuid:3243a25a-12d5-5af2-8e8b-268f264fa63b",
       "resource": {
         "resourceType": "MedicationStatement",
+        "id": "max-hospital-medicationstatement-0",
         "meta": {
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
@@ -493,12 +501,12 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Ramipril 5 mg Tabletten, 1-0-0</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Ramipril 1A Pharma 5 mg Tabletten, 1-0-0</div>"
         },
         "status": "active",
         "medicationReference": {
           "reference": "urn:uuid:b8da3bd0-1865-5ef9-baaf-9546bd790f7c",
-          "display": "Ramipril 5 mg Tabletten"
+          "display": "Ramipril 1A Pharma 5 mg Tabletten"
         },
         "subject": {
           "reference": "urn:uuid:970f79f0-dd34-554a-954d-b56c1c51c639"
@@ -517,14 +525,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "MedicationStatement"
+        "method": "PUT",
+        "url": "MedicationStatement/max-hospital-medicationstatement-0"
       }
     },
     {
       "fullUrl": "urn:uuid:9d99f812-fb61-58bc-95be-0e619b36897a",
       "resource": {
         "resourceType": "Medication",
+        "id": "max-hospital-medication-1",
         "meta": {
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication"
@@ -532,14 +541,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Metformin 1000 mg Filmtabletten (PZN 23456783, ATC A10BA02)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Metformin Heumann 1000 mg Filmtabletten (PZN 18400898, ATC A10BA02)</div>"
         },
         "code": {
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/ifa/pzn",
-              "code": "23456783",
-              "display": "Metformin 1000 mg Filmtabletten"
+              "code": "18400898",
+              "display": "Metformin Heumann 1000 mg Filmtabletten"
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
@@ -548,7 +557,7 @@
               "display": "Metformin"
             }
           ],
-          "text": "Metformin 1000 mg Filmtabletten"
+          "text": "Metformin Heumann 1000 mg Filmtabletten"
         },
         "form": {
           "text": "Filmtabletten"
@@ -582,14 +591,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "Medication"
+        "method": "PUT",
+        "url": "Medication/max-hospital-medication-1"
       }
     },
     {
       "fullUrl": "urn:uuid:e5fd01b5-b0a6-5937-91f5-2b75c623d1b0",
       "resource": {
         "resourceType": "MedicationStatement",
+        "id": "max-hospital-medicationstatement-1",
         "meta": {
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
@@ -597,12 +607,12 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Metformin 1000 mg Filmtabletten, 1-0-1</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Metformin Heumann 1000 mg Filmtabletten, 1-0-1</div>"
         },
         "status": "active",
         "medicationReference": {
           "reference": "urn:uuid:9d99f812-fb61-58bc-95be-0e619b36897a",
-          "display": "Metformin 1000 mg Filmtabletten"
+          "display": "Metformin Heumann 1000 mg Filmtabletten"
         },
         "subject": {
           "reference": "urn:uuid:970f79f0-dd34-554a-954d-b56c1c51c639"
@@ -621,14 +631,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "MedicationStatement"
+        "method": "PUT",
+        "url": "MedicationStatement/max-hospital-medicationstatement-1"
       }
     },
     {
       "fullUrl": "urn:uuid:8d27a72c-35b1-5e78-8448-e4ea0a76516f",
       "resource": {
         "resourceType": "Medication",
+        "id": "max-hospital-medication-2",
         "meta": {
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication"
@@ -636,14 +647,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Ibuprofen 600 mg Filmtabletten (PZN 34567899, ATC M01AE01)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Ibuprofen PUREN 600 mg Filmtabletten (PZN 13816720, ATC M01AE01)</div>"
         },
         "code": {
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/ifa/pzn",
-              "code": "34567899",
-              "display": "Ibuprofen 600 mg Filmtabletten"
+              "code": "13816720",
+              "display": "Ibuprofen PUREN 600 mg Filmtabletten"
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
@@ -652,7 +663,7 @@
               "display": "Ibuprofen"
             }
           ],
-          "text": "Ibuprofen 600 mg Filmtabletten"
+          "text": "Ibuprofen PUREN 600 mg Filmtabletten"
         },
         "form": {
           "text": "Filmtabletten"
@@ -686,14 +697,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "Medication"
+        "method": "PUT",
+        "url": "Medication/max-hospital-medication-2"
       }
     },
     {
       "fullUrl": "urn:uuid:e6310737-0525-5b91-8336-543ae680a32f",
       "resource": {
         "resourceType": "MedicationStatement",
+        "id": "max-hospital-medicationstatement-2",
         "meta": {
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
@@ -701,12 +713,12 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Ibuprofen 600 mg Filmtabletten, bei Bedarf 1 Tablette, höchstens 3 täglich</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Ibuprofen PUREN 600 mg Filmtabletten, bei Bedarf 1 Tablette, höchstens 3 täglich</div>"
         },
         "status": "active",
         "medicationReference": {
           "reference": "urn:uuid:8d27a72c-35b1-5e78-8448-e4ea0a76516f",
-          "display": "Ibuprofen 600 mg Filmtabletten"
+          "display": "Ibuprofen PUREN 600 mg Filmtabletten"
         },
         "subject": {
           "reference": "urn:uuid:970f79f0-dd34-554a-954d-b56c1c51c639"
@@ -725,14 +737,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "MedicationStatement"
+        "method": "PUT",
+        "url": "MedicationStatement/max-hospital-medicationstatement-2"
       }
     },
     {
       "fullUrl": "urn:uuid:983dd21d-b0bd-505e-8634-c9dcbffc101e",
       "resource": {
         "resourceType": "Medication",
+        "id": "max-hospital-medication-3",
         "meta": {
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication"
@@ -740,14 +753,14 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Pantoprazol 20 mg magensaftresistente Tabletten (PZN 45678917, ATC A02BC02)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Arzneimittel: Pantoprazol beta 20 mg acid magensaftresistente Tabletten (PZN 15577308, ATC A02BC02)</div>"
         },
         "code": {
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/ifa/pzn",
-              "code": "45678917",
-              "display": "Pantoprazol 20 mg magensaftresistente Tabletten"
+              "code": "15577308",
+              "display": "Pantoprazol beta 20 mg acid magensaftresistente Tabletten"
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/atc",
@@ -756,7 +769,7 @@
               "display": "Pantoprazol"
             }
           ],
-          "text": "Pantoprazol 20 mg magensaftresistente Tabletten"
+          "text": "Pantoprazol beta 20 mg acid magensaftresistente Tabletten"
         },
         "form": {
           "text": "magensaftresistente Tabletten"
@@ -790,14 +803,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "Medication"
+        "method": "PUT",
+        "url": "Medication/max-hospital-medication-3"
       }
     },
     {
       "fullUrl": "urn:uuid:1860c529-4794-5474-931a-b231b61d359f",
       "resource": {
         "resourceType": "MedicationStatement",
+        "id": "max-hospital-medicationstatement-3",
         "meta": {
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
@@ -805,12 +819,12 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Pantoprazol 20 mg magensaftresistente Tabletten, 1-0-0 vor dem Frühstück</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medikation: Pantoprazol beta 20 mg acid magensaftresistente Tabletten, 1-0-0 vor dem Frühstück</div>"
         },
         "status": "active",
         "medicationReference": {
           "reference": "urn:uuid:983dd21d-b0bd-505e-8634-c9dcbffc101e",
-          "display": "Pantoprazol 20 mg magensaftresistente Tabletten"
+          "display": "Pantoprazol beta 20 mg acid magensaftresistente Tabletten"
         },
         "subject": {
           "reference": "urn:uuid:970f79f0-dd34-554a-954d-b56c1c51c639"
@@ -829,14 +843,15 @@
         ]
       },
       "request": {
-        "method": "POST",
-        "url": "MedicationStatement"
+        "method": "PUT",
+        "url": "MedicationStatement/max-hospital-medicationstatement-3"
       }
     },
     {
       "fullUrl": "urn:uuid:24cf8781-93b7-5870-b14a-8a7412b57222",
       "resource": {
         "resourceType": "AllergyIntolerance",
+        "id": "max-hospital-allergyintolerance-0",
         "meta": {
           "profile": [
             "https://gematik.de/fhir/isik/StructureDefinition/ISiKAllergieUnvertraeglichkeit"
@@ -844,7 +859,7 @@
         },
         "text": {
           "status": "generated",
-          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Allergie: Birkenpollen (confirmed)</div>"
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Allergie: Allergie gegen Baumpollen (confirmed)</div>"
         },
         "clinicalStatus": {
           "coding": [
@@ -873,11 +888,11 @@
             {
               "system": "http://snomed.info/sct",
               "version": "http://snomed.info/sct/11000274103/version/20260515",
-              "code": "256262001",
-              "display": "Betula pendula pollen"
+              "code": "419263009",
+              "display": "Allergy to tree pollen"
             }
           ],
-          "text": "Birkenpollen"
+          "text": "Allergie gegen Baumpollen"
         },
         "patient": {
           "reference": "urn:uuid:970f79f0-dd34-554a-954d-b56c1c51c639"
@@ -888,8 +903,8 @@
         "recordedDate": "2016-04-20"
       },
       "request": {
-        "method": "POST",
-        "url": "AllergyIntolerance"
+        "method": "PUT",
+        "url": "AllergyIntolerance/max-hospital-allergyintolerance-0"
       }
     }
   ]
