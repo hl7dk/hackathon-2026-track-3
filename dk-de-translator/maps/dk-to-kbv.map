@@ -1,0 +1,72 @@
+map "https://hl7-your-health.projects.alexandrainst.dk/fhir/StructureMap/dk-to-kbv" = "DkToKbv"
+
+// A DK-Core Bundle (a $everything searchset or a transaction file) to a collection Bundle for a
+// German GP (KBV Basis). Other resource types pass through unchanged.
+
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" alias Bundle as source
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" alias Bundle as target
+
+imports "https://hl7-your-health.projects.alexandrainst.dk/fhir/StructureMap/dk-to-de-common"
+
+group DkToKbv(source src : Bundle, target tgt : Bundle) {
+  src -> tgt.type = 'collection' "type";
+  src.entry as e -> tgt.entry as t then KbvEntry(e, t) "entry";
+}
+
+group KbvEntry(source src, target tgt) {
+  src.fullUrl as v -> tgt.fullUrl = v "fullUrl";
+  src.resource : Patient as r -> tgt.resource = create('Patient') as t then KbvPatient(r, t) "patient";
+  src.resource : Condition as r -> tgt.resource = create('Condition') as t then KbvCondition(r, t) "condition";
+  src.resource : MedicationStatement as r -> tgt.resource = create('MedicationStatement') as t then KbvMedicationStatement(r, t) "medicationStatement";
+  src.resource : AllergyIntolerance as r -> tgt.resource = create('AllergyIntolerance') as t then KbvAllergyIntolerance(r, t) "allergyIntolerance";
+  src.resource : Observation as r -> tgt.resource = create('Observation') as t then KbvObservation(r, t) "observation";
+  src.resource as r where ($this is Patient or $this is Condition or $this is MedicationStatement or $this is AllergyIntolerance or $this is Observation).not() -> tgt.resource = r "other";
+}
+
+group KbvPatient(source src : Patient, target tgt : Patient) extends CopyPatient {
+  src -> tgt.meta as m, m.profile = 'https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Patient' "profile";
+}
+
+group KbvCondition(source src : Condition, target tgt : Condition) extends CopyCondition {
+  src -> tgt.meta as m, m.profile = 'https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis' "profile";
+}
+
+// KBV wants a Medication resource, not a code on the MedicationStatement: it is contained, with the ATC codes.
+group KbvMedicationStatement(source src : MedicationStatement, target tgt : MedicationStatement) extends CopyMedicationStatement {
+  src -> tgt.meta as m, m.profile = 'https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_MedicationStatement' "profile";
+  src.medication : CodeableConcept as c -> tgt.contained = create('Medication') as med, med.id = 'medication', tgt.medication = create('Reference') as ref, ref.reference = '#medication' then KbvMedication(c, med) "medication";
+  src.medication : Reference as v -> tgt.medication = v "medicationReference";
+}
+
+group KbvMedication(source src : CodeableConcept, target tgt : Medication) {
+  src -> tgt.code as c then DeCodes(src, c) "code";
+}
+
+// KBV requires a version on the status and SNOMED codings.
+group KbvAllergyIntolerance(source src : AllergyIntolerance, target tgt : AllergyIntolerance) extends CopyAllergyIntolerance {
+  src -> tgt.meta as m, m.profile = 'https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_AllergyIntolerance' "profile";
+  src.clinicalStatus as c -> tgt.clinicalStatus as t then Versioned(c, t) "clinicalStatus";
+  src.verificationStatus as c -> tgt.verificationStatus as t then Versioned(c, t) "verificationStatus";
+  src.code as c -> tgt.code as t then Versioned(c, t) "code";
+}
+
+group Versioned(source src : CodeableConcept, target tgt : CodeableConcept) {
+  src.coding as c -> tgt.coding as t then VersionedCoding(c, t) "coding";
+  src.text as v -> tgt.text = v "text";
+}
+
+group VersionedCoding(source src : Coding, target tgt : Coding) {
+  src.system as v -> tgt.system = v "system";
+  src.version as v -> tgt.version = v "version";
+  src.code as v -> tgt.code = v "code";
+  src.display as v -> tgt.display = v "display";
+  src where version.exists().not() and system = 'http://snomed.info/sct' -> tgt.version = 'http://snomed.info/sct/900000000000207008/version/20250101' "snomedVersion";
+  src where version.exists().not() and system != 'http://snomed.info/sct' -> tgt.version = '4.0.1' "hl7Version";
+}
+
+// Vital signs get the German profile for their LOINC code; other Observations keep no profile.
+group KbvObservation(source src : Observation, target tgt : Observation) extends CopyObservation {
+  src where code.coding.where(system = 'http://loinc.org' and code = '85354-9').exists() -> tgt.meta as m, m.profile = 'https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Observation_Blood_Pressure' "bloodPressure";
+  src where code.coding.where(system = 'http://loinc.org' and code = '8867-4').exists() -> tgt.meta as m, m.profile = 'https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Observation_Heart_Rate' "heartRate";
+  src where code.coding.where(system = 'http://loinc.org' and code = '2708-6').exists() -> tgt.meta as m, m.profile = 'https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Observation_Peripheral_Oxygen_Saturation' "oxygenSaturation";
+}

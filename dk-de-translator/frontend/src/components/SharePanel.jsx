@@ -1,26 +1,23 @@
-// Step 4. Choose who gets what (the consent, a placeholder), then convert and send.
+// Step 4. Choose who gets what (the consent), then convert (step 5 checks and sends).
 // Only the resource types the patient ticked are converted and sent.
 import { useState } from 'react';
 import { PURPOSES, SCOPES, TARGETS } from '../lib/config.js';
 import { convert } from '../lib/convert.js';
 import { filterByScopes } from '../lib/sources.js';
-import { submit } from '../lib/submit.js';
-import { Button, Card, Field, PlaceholderBadge, Status, inputClass, runStep } from './ui.jsx';
+import { Button, Card, Field, Status, inputClass, runStep } from './ui.jsx';
 
-export default function SharePanel({ record, converted, onConverted, targetId, setTargetId }) {
+export default function SharePanel({ record, onConverted, targetId, setTargetId }) {
   const [scopes, setScopes] = useState(SCOPES.map((s) => s.type));
   const [purpose, setPurpose] = useState(PURPOSES[0]);
   const [consent, setConsent] = useState(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState(null);
-  const [sent, setSent] = useState(null);
   const target = TARGETS.find((t) => t.id === targetId);
 
   // Any change to the choices withdraws the consent given for the old ones.
   const reset = () => {
     setConsent(null);
     onConverted(null);
-    setSent(null);
     setMessage(null);
   };
   const toggle = (type) => {
@@ -34,26 +31,21 @@ export default function SharePanel({ record, converted, onConverted, targetId, s
   };
 
   const doConvert = () => runStep(setMessage, setBusy, 'Converting…', async () => {
-    const result = await convert(filterByScopes(record, scopes), target);
-    onConverted(result.bundle);
-    setSent(null);
-    setMessage(result.translated
-      ? { text: `Converted for ${target.label}.`, kind: 'ok' }
-      : { text: 'Translator not connected yet: the data is passed on unchanged. See the Converted tab.' });
-  });
-
-  const doSend = () => runStep(setMessage, setBusy, `Sending to ${target.label}…`, async () => {
-    const response = await submit(converted, target.url);
-    setSent(response.entry ?? []);
-    setMessage({ text: `Sent ${converted.entry.length} records to ${target.url}.`, kind: 'ok' });
+    const source = filterByScopes(record, scopes);
+    const result = await convert(source, target);
+    onConverted({ ...result, source });
+    const unmapped = result.report.filter((r) => !r.to).map((r) => `${r.from.code}`);
+    setMessage(unmapped.length
+      ? { text: `Converted for ${target.label}: ${result.report.length - unmapped.length} codes translated, no mapping for ${unmapped.join(', ')}.` }
+      : { text: `Converted for ${target.label}: ${result.report.length} codes translated. Check the result below.`, kind: 'ok' });
   });
 
   const scopeLabel = (type) => SCOPES.find((s) => s.type === type)?.label ?? type;
 
   return (
     <Card step="4" title="Share">
-      <div className="rounded-md border-2 border-dashed border-amber-400 p-4">
-        <div className="mb-3 flex items-center gap-2 text-sm font-medium">Consent <PlaceholderBadge /></div>
+      <div className="rounded-md border border-slate-200 p-4">
+        <div className="mb-3 flex items-center gap-2 text-sm font-medium">Consent</div>
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Share with">
             <select className={inputClass} value={targetId} onChange={(e) => { setTargetId(e.target.value); reset(); }}>
@@ -89,15 +81,9 @@ export default function SharePanel({ record, converted, onConverted, targetId, s
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <Button disabled={busy || !consent} onClick={doConvert}>Convert</Button>
-        <Button primary disabled={busy || !converted} onClick={doSend}>Send to {target.label}</Button>
+        <Button primary disabled={busy || !consent} onClick={doConvert}>Convert for {target.label}</Button>
       </div>
       <Status message={message} />
-      {sent && (
-        <ul className="mt-2 space-y-0.5 text-sm">
-          {sent.map((e, i) => <li key={i}><code className="text-xs">{e.response?.status}</code> {e.response?.location}</li>)}
-        </ul>
-      )}
     </Card>
   );
 }

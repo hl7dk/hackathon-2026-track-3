@@ -1,0 +1,64 @@
+{
+  "resourceType": "ConceptMap",
+  "id": "atc-bfarm-to-who",
+  "url": "https://hl7-your-health.projects.alexandrainst.dk/fhir/ConceptMap/atc-bfarm-to-who",
+  "name": "atc_bfarm_to_who",
+  "title": "BfArM ATC to WHO ATC",
+  "status": "draft",
+  "experimental": true,
+  "description": "Hackathon test mapping, covering only the codes in the test patients.",
+  "sourceUri": "http://fhir.de/CodeSystem/bfarm/atc",
+  "targetUri": "http://www.whocc.no/atc",
+  "group": [
+    {
+      "source": "http://fhir.de/CodeSystem/bfarm/atc",
+      "target": "http://www.whocc.no/atc",
+      "element": [
+        {
+          "code": "A02BC02",
+          "display": "Pantoprazol",
+          "target": [
+            {
+              "code": "A02BC02",
+              "display": "Pantoprazol",
+              "equivalence": "equal"
+            }
+          ]
+        },
+        {
+          "code": "A10BA02",
+          "display": "Metformin",
+          "target": [
+            {
+              "code": "A10BA02",
+              "display": "Metformin",
+              "equivalence": "equal"
+            }
+          ]
+        },
+        {
+          "code": "C09AA05",
+          "display": "Ramipril",
+          "target": [
+            {
+              "code": "C09AA05",
+              "display": "Ramipril",
+              "equivalence": "equal"
+            }
+          ]
+        },
+        {
+          "code": "M01AE01",
+          "display": "Ibuprofen",
+          "target": [
+            {
+              "code": "M01AE01",
+              "display": "Ibuprofen",
+              "equivalence": "equal"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

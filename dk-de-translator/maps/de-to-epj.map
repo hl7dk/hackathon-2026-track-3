@@ -1,0 +1,109 @@
+map "https://hl7-your-health.projects.alexandrainst.dk/fhir/StructureMap/de-to-epj" = "DeToEpj"
+
+// A German Bundle (KBV or ISiK / MII, e.g. Anne at her Flensburg GP or Max Mustermann) to a collection
+// Bundle for the Danish EHR (EPJ, DK-Core). A Danish coding goes in front of every German one, which stays:
+// ICD-10-GM to SKS, BfArM ATC to WHO ATC, through the ConceptMaps in ../terminology/conceptmaps/.
+// SKS as the EPJ writes it: system http://medinfo.dk/sks, code e.g. DE780.
+// The German ICD-10-GM extensions (Diagnosesicherheit, Seitenlokalisation) have no place in DK-Core and
+// are dropped; Diagnosesicherheit is also in verificationStatus. DK-Core has no medication profiles, so
+// Medication, MedicationStatement and AllergyIntolerance lose their German profile and get none.
+// Other resource types (e.g. Encounter) pass through unchanged.
+
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" alias Bundle as source
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" alias Bundle as target
+
+imports "https://hl7-your-health.projects.alexandrainst.dk/fhir/StructureMap/dk-to-de-common"
+
+group DeToEpj(source src : Bundle, target tgt : Bundle) {
+  src -> tgt.type = 'collection' "type";
+  src.entry as e -> tgt.entry as t then DkEntry(e, t) "entry";
+}
+
+group DkEntry(source src, target tgt) {
+  src.fullUrl as v -> tgt.fullUrl = v "fullUrl";
+  src.resource : Patient as r -> tgt.resource = create('Patient') as t then DkPatient(r, t) "patient";
+  src.resource : Condition as r -> tgt.resource = create('Condition') as t then DkCondition(r, t) "condition";
+  src.resource : Medication as r -> tgt.resource = create('Medication') as t then DkMedication(r, t) "medication";
+  src.resource : MedicationStatement as r -> tgt.resource = create('MedicationStatement') as t then DkMedicationStatement(r, t) "medicationStatement";
+  src.resource : AllergyIntolerance as r -> tgt.resource = create('AllergyIntolerance') as t then DkAllergyIntolerance(r, t) "allergyIntolerance";
+  src.resource as r where ($this is Patient or $this is Condition or $this is Medication or $this is MedicationStatement or $this is AllergyIntolerance).not() -> tgt.resource = r "other";
+}
+
+// The CPR, if the German side has it (Anne gave it at registration), is how the Danish side finds her.
+// KVNR and the practice's number stay as further identifiers.
+group DkPatient(source src : Patient, target tgt : Patient) extends CopyPatient {
+  src -> tgt.meta as m, m.profile = 'http://hl7.dk/fhir/core/StructureDefinition/dk-core-patient' "profile";
+}
+
+group DkCondition(source src : Condition, target tgt : Condition) {
+  src -> tgt.meta as m, m.profile = 'http://hl7.dk/fhir/core/StructureDefinition/dk-core-condition' "profile";
+  src.id as v -> tgt.id = v "id";
+  src.text as v -> tgt.text = v "text";
+  src.identifier as v -> tgt.identifier = v "identifier";
+  src.clinicalStatus as v -> tgt.clinicalStatus = v "clinicalStatus";
+  src.verificationStatus as v -> tgt.verificationStatus = v "verificationStatus";
+  src.category as v -> tgt.category = v "category";
+  src.severity as v -> tgt.severity = v "severity";
+  src.code as c -> tgt.code as t then DkCodes(c, t) "code";
+  src.bodySite as v -> tgt.bodySite = v "bodySite";
+  src.subject as v -> tgt.subject = v "subject";
+  src.encounter as v -> tgt.encounter = v "encounter";
+  src.onset as v -> tgt.onset = v "onset";
+  src.abatement as v -> tgt.abatement = v "abatement";
+  src.recordedDate as v -> tgt.recordedDate = v "recordedDate";
+  src.recorder as v -> tgt.recorder = v "recorder";
+  src.asserter as v -> tgt.asserter = v "asserter";
+  src.note as v -> tgt.note = v "note";
+}
+
+group DkMedication(source src : Medication, target tgt : Medication) {
+  src.id as v -> tgt.id = v "id";
+  src.text as v -> tgt.text = v "text";
+  src.identifier as v -> tgt.identifier = v "identifier";
+  src.code as c -> tgt.code as t then DkCodes(c, t) "code";
+  src.status as v -> tgt.status = v "status";
+  src.manufacturer as v -> tgt.manufacturer = v "manufacturer";
+  src.form as v -> tgt.form = v "form";
+  src.amount as v -> tgt.amount = v "amount";
+  src.ingredient as v -> tgt.ingredient = v "ingredient";
+  src.batch as v -> tgt.batch = v "batch";
+}
+
+group DkMedicationStatement(source src : MedicationStatement, target tgt : MedicationStatement) extends CopyMedicationStatement {
+  src.medication : CodeableConcept as c -> tgt.medication = create('CodeableConcept') as t then DkCodes(c, t) "medicationCode";
+  src.medication : Reference as v -> tgt.medication = v "medicationReference";
+}
+
+group DkAllergyIntolerance(source src : AllergyIntolerance, target tgt : AllergyIntolerance) extends CopyAllergyIntolerance {
+  src.clinicalStatus as v -> tgt.clinicalStatus = v "clinicalStatus";
+  src.verificationStatus as v -> tgt.verificationStatus = v "verificationStatus";
+  src.code as v -> tgt.code = v "code";
+}
+
+// Codes
+
+group DkCodes(source src : CodeableConcept, target tgt : CodeableConcept) {
+  src.coding as c where system = 'http://fhir.de/CodeSystem/bfarm/icd-10-gm' -> tgt.coding as t then Icd10gmToSks(c, t) "sks";
+  src.coding as c where system = 'http://fhir.de/CodeSystem/bfarm/atc' -> tgt.coding as t then AtcBfarmToWho(c, t) "atc";
+  src.coding as c where system = 'http://fhir.de/CodeSystem/bfarm/icd-10-gm' -> tgt.coding as t then WithoutExtensions(c, t) "keepIcd";
+  src.coding as c where system != 'http://fhir.de/CodeSystem/bfarm/icd-10-gm' -> tgt.coding = c "keep";
+  src.text as v -> tgt.text = v "text";
+}
+
+group Icd10gmToSks(source src : Coding, target tgt : Coding) {
+  src -> tgt.system = 'http://medinfo.dk/sks' "system";
+  src -> tgt.code = translate(src, 'https://hl7-your-health.projects.alexandrainst.dk/fhir/ConceptMap/icd10gm-to-sks', 'code') "code";
+}
+
+group AtcBfarmToWho(source src : Coding, target tgt : Coding) {
+  src -> tgt.system = 'http://www.whocc.no/atc' "system";
+  src -> tgt.code = translate(src, 'https://hl7-your-health.projects.alexandrainst.dk/fhir/ConceptMap/atc-bfarm-to-who', 'code') "code";
+  src.display as v -> tgt.display = v "display";
+}
+
+group WithoutExtensions(source src : Coding, target tgt : Coding) {
+  src.system as v -> tgt.system = v "system";
+  src.version as v -> tgt.version = v "version";
+  src.code as v -> tgt.code = v "code";
+  src.display as v -> tgt.display = v "display";
+}

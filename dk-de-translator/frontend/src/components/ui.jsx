@@ -1,4 +1,5 @@
 // Small shared building blocks.
+import { useState } from 'react';
 
 export function PlaceholderBadge() {
   return (
@@ -9,10 +10,10 @@ export function PlaceholderBadge() {
 }
 
 // placeholder: the card stands in for what the wallet / consent group builds.
-export function Card({ title, step, actions, placeholder, children }) {
+export function Card({ title, step, actions, placeholder, className = '', children }) {
   const frame = placeholder ? 'border-2 border-dashed border-amber-400' : 'border border-slate-200';
   return (
-    <section className={`rounded-lg bg-white p-5 shadow-sm ${frame}`}>
+    <section className={`rounded-lg bg-white p-5 shadow-sm ${frame} ${className}`}>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
           {step && <span className="grid size-6 place-items-center rounded-full bg-blue-700 text-sm text-white">{step}</span>}
@@ -26,10 +27,13 @@ export function Card({ title, step, actions, placeholder, children }) {
   );
 }
 
-export function Button({ primary, className = '', ...props }) {
-  const look = primary
-    ? 'border-blue-700 bg-blue-700 text-white hover:bg-blue-800'
-    : 'border-slate-300 bg-white hover:bg-slate-50';
+// danger: for a step that cannot be undone, e.g. confirming a delete.
+export function Button({ primary, danger, className = '', ...props }) {
+  const look = danger
+    ? 'border-red-700 bg-red-700 text-white hover:bg-red-800'
+    : primary
+      ? 'border-blue-700 bg-blue-700 text-white hover:bg-blue-800'
+      : 'border-slate-300 bg-white hover:bg-slate-50';
   return <button className={`rounded-md border px-3 py-1.5 text-sm font-medium disabled:cursor-default disabled:opacity-50 ${look} ${className}`} {...props} />;
 }
 
@@ -73,4 +77,22 @@ export async function runStep(setMessage, setBusy, busyText, fn) {
   } finally {
     setBusy(false);
   }
+}
+
+// A delete that asks once more before it runs. onDelete is called on the second click.
+export function ConfirmDelete({ onDelete, disabled, label = 'Delete', confirmLabel = 'Delete?' }) {
+  const [confirming, setConfirming] = useState(false);
+  const stop = (fn) => (e) => { e.stopPropagation(); fn(); };
+  return (
+    <span className="inline-flex gap-1">
+      <Button
+        danger={confirming}
+        disabled={disabled}
+        onClick={stop(() => (confirming ? (setConfirming(false), onDelete()) : setConfirming(true)))}
+      >
+        {confirming ? confirmLabel : label}
+      </Button>
+      {confirming && <Button onClick={stop(() => setConfirming(false))}>Cancel</Button>}
+    </span>
+  );
 }

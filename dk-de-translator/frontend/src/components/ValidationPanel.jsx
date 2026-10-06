@@ -1,4 +1,4 @@
-// Right side: $validate output for the version shown on the left.
+// Step 3, below My data: $validate output for the version shown there.
 import { useState } from 'react';
 import { SERVERS } from '../lib/config.js';
 import { describe } from '../lib/display.js';

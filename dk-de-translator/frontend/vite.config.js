@@ -7,11 +7,11 @@ import tailwindcss from '@tailwindcss/vite';
 import { parse } from 'yaml';
 import walletPlugin from './server/walletPlugin.js';
 
-// Servers in config.yml with proxyTo: forward their url path to the real server.
+// Servers in config.yml (sources, targets, transform) with proxyTo: forward their url path to the real server.
 // With auth: basic, the proxy adds USERNAME/PASSWORD from ../.env, so they never reach the browser.
 const configFile = fileURLToPath(new URL('./config.yml', import.meta.url));
 const config = parse(readFileSync(configFile, 'utf8'));
-const { sources, targets } = config;
+const { sources, targets, transform } = config;
 const envFile = new URL('../.env', import.meta.url);
 const env = existsSync(envFile) ? parseEnv(readFileSync(envFile, 'utf8')) : {};
 
@@ -21,7 +21,7 @@ const basicAuth = (s) => {
   return `${env.USERNAME}:${env.PASSWORD}`;
 };
 
-const proxy = Object.fromEntries([...sources, ...targets].filter((s) => s.proxyTo).map((s) => {
+const proxy = Object.fromEntries([...sources, ...targets, transform].filter((s) => s?.proxyTo).map((s) => {
   const upstream = new URL(s.proxyTo);
   const auth = basicAuth(s);
   return [s.url, {

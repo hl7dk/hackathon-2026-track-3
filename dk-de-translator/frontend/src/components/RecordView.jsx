@@ -1,5 +1,7 @@
 // A bundle as one table per resource type.
-import { SECTIONS } from '../lib/display.js';
+// onDelete(resource): if given, every row but the Patient's gets a Delete button.
+import { SECTIONS, resolver } from '../lib/display.js';
+import { ConfirmDelete } from './ui.jsx';
 
 function Cell({ value }) {
   if (!Array.isArray(value)) return value ?? '';
@@ -10,8 +12,9 @@ function Cell({ value }) {
   ));
 }
 
-export default function RecordView({ bundle }) {
+export default function RecordView({ bundle, onDelete, busy }) {
   const resources = (bundle.entry ?? []).map((e) => e.resource);
+  const resolve = resolver(bundle);
   const known = new Set(SECTIONS.map((s) => s.type));
   const other = resources.filter((r) => !known.has(r.resourceType));
 
@@ -30,12 +33,19 @@ export default function RecordView({ bundle }) {
                 <thead>
                   <tr className="border-b border-slate-200 text-slate-500">
                     {section.head.map((h) => <th key={h} className="px-2 py-1.5 font-medium">{h}</th>)}
+                    {/* Wide enough for Delete? and Cancel, so confirming does not shift the columns. */}
+                    {onDelete && <th className="w-44" />}
                   </tr>
                 </thead>
                 <tbody>
                   {rows.map((r, i) => (
                     <tr key={r.id ?? i} className="border-b border-slate-100 align-top">
-                      {section.row(r).map((c, j) => <td key={j} className="px-2 py-1.5"><Cell value={c} /></td>)}
+                      {section.row(r, resolve).map((c, j) => <td key={j} className="px-2 py-1.5"><Cell value={c} /></td>)}
+                      {onDelete && (
+                        <td className="w-44 whitespace-nowrap px-2 py-1.5 text-right">
+                          {r.resourceType !== 'Patient' && <ConfirmDelete disabled={busy} onDelete={() => onDelete(r)} />}
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>

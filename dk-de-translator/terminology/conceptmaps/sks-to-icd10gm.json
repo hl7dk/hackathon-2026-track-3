@@ -1,0 +1,90 @@
+{
+  "resourceType": "ConceptMap",
+  "id": "sks-to-icd10gm",
+  "url": "https://hl7-your-health.projects.alexandrainst.dk/fhir/ConceptMap/sks-to-icd10gm",
+  "name": "sks_to_icd10gm",
+  "title": "SKS diagnoses to ICD-10-GM",
+  "status": "draft",
+  "experimental": true,
+  "description": "Hackathon test mapping, covering only the codes in the test patients.",
+  "sourceUri": "urn:oid:1.2.208.176.2.4.12",
+  "targetUri": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+  "group": [
+    {
+      "source": "urn:oid:1.2.208.176.2.4.12",
+      "target": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+      "element": [
+        {
+          "code": "DE109",
+          "display": "Type 1-diabetes uden komplikationer",
+          "target": [
+            {
+              "code": "E10.90",
+              "display": "Diabetes mellitus, Typ 1: Ohne Komplikationen: Nicht als entgleist bezeichnet",
+              "equivalence": "inexact",
+              "comment": "ICD-10-GM 5th digit 0 (nicht als entgleist bezeichnet) assumed: SKS does not record it."
+            }
+          ]
+        },
+        {
+          "code": "DE119",
+          "display": "Type 2-diabetes uden komplikationer",
+          "target": [
+            {
+              "code": "E11.90",
+              "display": "Diabetes mellitus, Typ 2: Ohne Komplikationen: Nicht als entgleist bezeichnet",
+              "equivalence": "inexact",
+              "comment": "ICD-10-GM 5th digit 0 (nicht als entgleist bezeichnet) assumed: SKS does not record it."
+            }
+          ]
+        },
+        {
+          "code": "DI109",
+          "display": "Essentiel hypertension",
+          "target": [
+            {
+              "code": "I10.90",
+              "display": "Essentielle Hypertonie, nicht näher bezeichnet: Ohne Angabe einer hypertensiven Krise",
+              "equivalence": "inexact",
+              "comment": "ICD-10-GM 5th digit 0 (ohne Angabe einer hypertensiven Krise) assumed."
+            }
+          ]
+        },
+        {
+          "code": "DJ459",
+          "display": "Astma UNS",
+          "target": [
+            {
+              "code": "J45.9",
+              "display": "Asthma bronchiale, nicht näher bezeichnet",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "DK219",
+          "display": "Gastro-øsofageal refluks uden øsofagitis",
+          "target": [
+            {
+              "code": "K21.9",
+              "display": "Gastroösophageale Refluxkrankheit ohne Ösophagitis",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "DM171",
+          "display": "Anden primær knæartrose",
+          "target": [
+            {
+              "code": "M17.1",
+              "display": "Sonstige primäre Gonarthrose",
+              "equivalence": "equivalent"
+            }
+          ]
+        }
+      ],
+      "targetVersion": "2026"
+    }
+  ]
+}
