@@ -28,6 +28,12 @@ hapi:
         version: 2025.0.1
         packageUrl: https://packages.fhir.org/de.medizininformatikinitiative.kerndatensatz.diagnose/2025.0.1
         installMode: STORE_AND_INSTALL
+      # Needed by MII Medikation (DosageDE), HAPI doesn't pull it in by itself
+      fhir_medication:
+        name: de.fhir.medication
+        version: 1.0.7
+        packageUrl: https://packages.fhir.org/de.fhir.medication/1.0.7
+        installMode: STORE_AND_INSTALL
       mii_medikation:
         name: de.medizininformatikinitiative.kerndatensatz.medikation
         version: 2026.0.1
