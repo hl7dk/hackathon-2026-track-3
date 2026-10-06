@@ -1,0 +1,44 @@
+{
+  "resourceType": "ConceptMap",
+  "id": "icpc2-to-icd10gm",
+  "url": "https://hl7-your-health.projects.alexandrainst.dk/fhir/ConceptMap/icpc2-to-icd10gm",
+  "name": "icpc2_to_icd10gm",
+  "title": "ICPC-2 (Danish GP) to ICD-10-GM",
+  "status": "draft",
+  "experimental": true,
+  "description": "Hackathon test mapping, covering only the codes in the test patients.",
+  "sourceUri": "urn:oid:1.2.208.176.2.31",
+  "targetUri": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+  "group": [
+    {
+      "source": "urn:oid:1.2.208.176.2.31",
+      "target": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+      "element": [
+        {
+          "code": "P76",
+          "display": "Depression",
+          "target": [
+            {
+              "code": "F32.9",
+              "display": "Depressive Episode, nicht näher bezeichnet",
+              "equivalence": "inexact",
+              "comment": "ICPC-2 P76 also covers recurrent depression (F33)."
+            }
+          ]
+        },
+        {
+          "code": "T86",
+          "display": "Hypothyreose/myksødem",
+          "target": [
+            {
+              "code": "E03.9",
+              "display": "Hypothyreose, nicht näher bezeichnet",
+              "equivalence": "equivalent"
+            }
+          ]
+        }
+      ],
+      "targetVersion": "2026"
+    }
+  ]
+}

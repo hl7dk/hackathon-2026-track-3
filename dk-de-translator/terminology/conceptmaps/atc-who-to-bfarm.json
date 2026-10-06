@@ -1,0 +1,108 @@
+{
+  "resourceType": "ConceptMap",
+  "id": "atc-who-to-bfarm",
+  "url": "https://hl7-your-health.projects.alexandrainst.dk/fhir/ConceptMap/atc-who-to-bfarm",
+  "name": "atc_who_to_bfarm",
+  "title": "WHO ATC to BfArM ATC",
+  "status": "draft",
+  "experimental": true,
+  "description": "Hackathon test mapping, covering only the codes in the test patients.",
+  "sourceUri": "http://www.whocc.no/atc",
+  "targetUri": "http://fhir.de/CodeSystem/bfarm/atc",
+  "group": [
+    {
+      "source": "http://www.whocc.no/atc",
+      "target": "http://fhir.de/CodeSystem/bfarm/atc",
+      "element": [
+        {
+          "code": "A10AB05",
+          "display": "Insulin aspart",
+          "target": [
+            {
+              "code": "A10AB05",
+              "display": "Insulin aspart",
+              "equivalence": "equal"
+            }
+          ]
+        },
+        {
+          "code": "A10AE04",
+          "display": "Insulin glargin",
+          "target": [
+            {
+              "code": "A10AE04",
+              "display": "Insulin glargin",
+              "equivalence": "equal"
+            }
+          ]
+        },
+        {
+          "code": "A10BA02",
+          "display": "Metformin",
+          "target": [
+            {
+              "code": "A10BA02",
+              "display": "Metformin",
+              "equivalence": "equal"
+            }
+          ]
+        },
+        {
+          "code": "C09AA05",
+          "display": "Ramipril",
+          "target": [
+            {
+              "code": "C09AA05",
+              "display": "Ramipril",
+              "equivalence": "equal"
+            }
+          ]
+        },
+        {
+          "code": "C10AA05",
+          "display": "Atorvastatin",
+          "target": [
+            {
+              "code": "C10AA05",
+              "display": "Atorvastatin",
+              "equivalence": "equal"
+            }
+          ]
+        },
+        {
+          "code": "H03AA01",
+          "display": "Levothyroxin",
+          "target": [
+            {
+              "code": "H03AA01",
+              "display": "Levothyroxin",
+              "equivalence": "equal"
+            }
+          ]
+        },
+        {
+          "code": "N06AB06",
+          "display": "Sertralin",
+          "target": [
+            {
+              "code": "N06AB06",
+              "display": "Sertralin",
+              "equivalence": "equal"
+            }
+          ]
+        },
+        {
+          "code": "R03AC02",
+          "display": "Salbutamol",
+          "target": [
+            {
+              "code": "R03AC02",
+              "display": "Salbutamol",
+              "equivalence": "equal"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

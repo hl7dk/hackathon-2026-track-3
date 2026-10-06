@@ -1,0 +1,99 @@
+{
+  "resourceType": "ConceptMap",
+  "id": "icd10gm-to-sks",
+  "url": "https://hl7-your-health.projects.alexandrainst.dk/fhir/ConceptMap/icd10gm-to-sks",
+  "name": "icd10gm_to_sks",
+  "title": "ICD-10-GM to SKS diagnoses",
+  "status": "draft",
+  "experimental": true,
+  "description": "Hackathon test mapping, covering only the codes in the test patients.",
+  "sourceUri": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+  "targetUri": "urn:oid:1.2.208.176.2.4.12",
+  "group": [
+    {
+      "source": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+      "target": "urn:oid:1.2.208.176.2.4.12",
+      "element": [
+        {
+          "code": "E11.90",
+          "display": "Diabetes mellitus, Typ 2: Ohne Komplikationen: Nicht als entgleist bezeichnet",
+          "target": [
+            {
+              "code": "DE119",
+              "display": "Type 2-diabetes uden komplikationer",
+              "equivalence": "wider",
+              "comment": "SKS does not record 'nicht als entgleist'."
+            }
+          ]
+        },
+        {
+          "code": "I10.90",
+          "display": "Essentielle Hypertonie, nicht näher bezeichnet: Ohne Angabe einer hypertensiven Krise",
+          "target": [
+            {
+              "code": "DI109",
+              "display": "Essentiel hypertension",
+              "equivalence": "wider"
+            }
+          ]
+        },
+        {
+          "code": "K21.9",
+          "display": "Gastroösophageale Refluxkrankheit ohne Ösophagitis",
+          "target": [
+            {
+              "code": "DK219",
+              "display": "Gastro-øsofageal refluks uden øsofagitis",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "M17.1",
+          "display": "Sonstige primäre Gonarthrose",
+          "target": [
+            {
+              "code": "DM171",
+              "display": "Anden primær knæartrose",
+              "equivalence": "equivalent",
+              "comment": "The Seitenlokalisation extension (R) on the German coding has no place in the SKS code."
+            }
+          ]
+        },
+        {
+          "code": "E78.0",
+          "display": "Reine Hypercholesterinämie",
+          "target": [
+            {
+              "code": "DE780",
+              "display": "Ren hyperkolesterolæmi",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "H10.9",
+          "display": "Konjunktivitis, nicht näher bezeichnet",
+          "target": [
+            {
+              "code": "DH109",
+              "display": "Konjunktivitis UNS",
+              "equivalence": "equivalent"
+            }
+          ]
+        },
+        {
+          "code": "J06.9",
+          "display": "Akute Infektion der oberen Atemwege, nicht näher bezeichnet",
+          "target": [
+            {
+              "code": "DJ069",
+              "display": "Akut øvre luftvejsinfektion UNS",
+              "equivalence": "equivalent"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
