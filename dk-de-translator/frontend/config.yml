@@ -35,17 +35,19 @@ cprSystem: urn:oid:1.2.208.176.1.2
 
 # Where a patient's data can be requested from.
 # profiles is empty: resources are validated against their own meta.profile.
+# allowDelete: the dashboard (patients.html) can delete patients and single resources here.
 sources:
   - id: dk
     label: Danish GP (DK-Core)
     url: /datasource1/fhir
     proxyTo: https://datasource1.hl7-your-health.projects.alexandrainst.dk/fhir
     auth: basic
+    allowDelete: true
     profiles: {}
 
 # Where converted data can be sent, and what each resource type is validated
 # against there (same mapping as the CLI validators, see ../README.md). map: the StructureMap
-# Convert runs for this target. allowDelete: the dashboard (patients.html) can delete patients here.
+# Convert runs for this target. allowDelete: the dashboard (patients.html) can delete patients and single resources here.
 # The German targets are the shared servers datasource2 (hospital) and datasource3 (GP).
 # For the local containers instead (../dev.sh): /local-de-hospital/fhir and /local-de-gp/fhir,
 # proxyTo http://localhost:28081/fhir and 28082, without auth.
@@ -62,6 +64,11 @@ targets:
       Condition: https://gematik.de/fhir/isik/StructureDefinition/ISiKDiagnose
       MedicationStatement: https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement
       AllergyIntolerance: https://gematik.de/fhir/isik/StructureDefinition/ISiKAllergieUnvertraeglichkeit
+      # Vital signs, by LOINC code: the de.basisprofil ones (ISiK keeps its own in a module the server does not have)
+      Observation:
+        85354-9: http://fhir.de/StructureDefinition/observation-de-vitalsign-blutdruck
+        8867-4: http://fhir.de/StructureDefinition/observation-de-vitalsign-herzfrequenz
+        2708-6: http://fhir.de/StructureDefinition/observation-de-vitalsign-sauerstoffsaettigung-pulsoximetrie
 
   - id: de-gp
     label: German GP in Flensburg (KBV)
@@ -75,14 +82,21 @@ targets:
       Condition: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis
       MedicationStatement: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_MedicationStatement
       AllergyIntolerance: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_AllergyIntolerance
+      # Vital signs, by LOINC code
+      Observation:
+        85354-9: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Observation_Blood_Pressure
+        8867-4: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Observation_Heart_Rate
+        2708-6: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Observation_Peripheral_Oxygen_Saturation
 
 # Matchbox, holding the StructureMaps from ../maps/ and the ConceptMaps from ../terminology/ (load both with
-# ../maps/load.sh). Convert runs StructureMap/$transform there with the target's map.
-# The local matchbox container (docker compose up -d matchbox).
+# ../maps/load.sh <base>). Convert runs StructureMap/$transform there with the target's map.
+# The shared one on datasource4. For the local container (docker compose up -d matchbox) instead:
+# url /local-matchbox/fhir, proxyTo http://localhost:28084/matchboxv3/fhir, no auth.
 transform:
   id: matchbox
-  url: /local-matchbox/fhir
-  proxyTo: http://localhost:28084/matchboxv3/fhir
+  url: /datasource4/matchboxv3/fhir
+  proxyTo: https://datasource4.hl7-your-health.projects.alexandrainst.dk/matchboxv3/fhir
+  auth: basic
   # Danish code system: the German one the maps add next to it. Only used to report what was translated.
   systems:
     urn:oid:1.2.208.176.2.4.12: http://fhir.de/CodeSystem/bfarm/icd-10-gm

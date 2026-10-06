@@ -66,15 +66,13 @@ export default function App() {
 
       {record && (
         <>
-          <div className="grid items-start gap-4 lg:grid-cols-2">
-            <DataPanel bundle={shown} view={view} setView={changeView} hasConverted={!!converted} />
-            <ValidationPanel
-              bundle={shown}
-              versionLabel={showConverted ? 'Converted' : 'Original'}
-              serverId={validateOn}
-              setServerId={setValidateOn}
-            />
-          </div>
+          <DataPanel bundle={shown} view={view} setView={changeView} hasConverted={!!converted} />
+          <ValidationPanel
+            bundle={shown}
+            versionLabel={showConverted ? 'Converted' : 'Original'}
+            serverId={validateOn}
+            setServerId={setValidateOn}
+          />
           <SharePanel
             record={record}
             onConverted={onConverted}

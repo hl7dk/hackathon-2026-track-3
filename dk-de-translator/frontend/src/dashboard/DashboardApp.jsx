@@ -44,6 +44,9 @@ async function deletePatient(baseUrl, id) {
 }
 
 const name = (p) => p.name?.map((n) => [...(n.given ?? []), n.family].join(' ')).join(', ') || '(no name)';
+// One line per address: street, postcode and city, country.
+const addresses = (p) => (p.address ?? []).map((a) => a.text
+  ?? [...(a.line ?? []), [a.postalCode, a.city].filter(Boolean).join(' '), a.country].filter(Boolean).join(', '));
 
 function PatientRow({ patient, server, onDeleted }) {
   const baseUrl = server.url;
@@ -63,6 +66,18 @@ function PatientRow({ patient, server, onDeleted }) {
       onDeleted(`Deleted ${name(patient)} (${n} resources) from ${server.label}.`);
     });
   };
+
+  // One resource of the record; HAPI refuses it while other resources still point at it.
+  const removeResource = (r) => runStep(setMessage, setBusy, `Deleting ${r.resourceType}/${r.id}…`, async () => {
+    const res = await fetch(`${baseUrl}/${r.resourceType}/${r.id}`, { method: 'DELETE', headers: FHIR_JSON });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      const issues = body?.issue?.map((i) => i.diagnostics).filter(Boolean).join('; ');
+      throw new Error(`${res.status} ${res.statusText}${issues ? `: ${issues}` : ''}`);
+    }
+    setRecord((cur) => ({ ...cur, entry: cur.entry.filter((e) => e.resource !== r) }));
+    setMessage({ text: `Deleted ${r.resourceType}/${r.id}.`, kind: 'ok' });
+  });
 
   const toggle = () => {
     setOpen(!open);
@@ -85,6 +100,10 @@ function PatientRow({ patient, server, onDeleted }) {
         <td className="px-2 py-1.5">{patient.birthDate}</td>
         <td className="px-2 py-1.5">{patient.gender}</td>
         <td className="px-2 py-1.5">
+          {addresses(patient).map((a) => <div key={a}>{a}</div>)}
+          {(patient.telecom ?? []).map((t) => <div key={`${t.system}|${t.value}`} className="text-slate-500">{t.value}</div>)}
+        </td>
+        <td className="px-2 py-1.5">
           {(patient.identifier ?? []).map((i) => (
             <div key={`${i.system}|${i.value}`}>
               <span className="text-slate-500">{SYSTEM_LABELS[i.system] ?? i.system}</span> <code className="text-xs">{i.value}</code>
@@ -93,10 +112,10 @@ function PatientRow({ patient, server, onDeleted }) {
         </td>
         <td className="px-2 py-1.5"><code className="text-xs text-slate-500">{patient.id}</code></td>
         <td className="px-2 py-1.5 text-slate-500">{patient.meta?.lastUpdated?.slice(0, 10)}</td>
-        <td className="px-2 py-1.5 text-right">
+        <td className="w-64 whitespace-nowrap px-2 py-1.5 text-right">
           {server.allowDelete && (
             <span className="inline-flex gap-1">
-              <Button className={confirming ? 'border-red-700 bg-red-700 text-white hover:bg-red-800' : ''} disabled={busy} onClick={remove}>
+              <Button danger={confirming} disabled={busy} onClick={remove}>
                 {confirming ? 'Delete everything?' : 'Delete'}
               </Button>
               {confirming && <Button onClick={(e) => { e.stopPropagation(); setConfirming(false); }}>Cancel</Button>}
@@ -106,7 +125,7 @@ function PatientRow({ patient, server, onDeleted }) {
       </tr>
       {open && (
         <tr className="border-b border-slate-200 bg-slate-50">
-          <td colSpan={7} className="px-4 py-3">
+          <td colSpan={8} className="px-4 py-3">
             {/* w-0 min-w-full: the record fills the row without widening the table (long raw FHIR lines scroll inside). */}
             <div className="w-0 min-w-full">
               <Status message={message} />
@@ -115,7 +134,7 @@ function PatientRow({ patient, server, onDeleted }) {
                   <p className="mb-3 text-sm text-slate-600">
                     {counts.length ? counts.map(([t, n]) => `${n} ${t}`).join(' · ') : 'Only the Patient resource, nothing else.'}
                   </p>
-                  <RecordView bundle={record} />
+                  <RecordView bundle={record} busy={busy} onDelete={server.allowDelete ? removeResource : undefined} />
                   <Json value={record} />
                 </>
               )}
@@ -182,7 +201,7 @@ export default function DashboardApp() {
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-500">
-                  {['Name', 'Born', 'Sex', 'Identifiers', 'Server id', 'Updated', ''].map((h) => <th key={h} className="px-2 py-1.5 font-medium">{h}</th>)}
+                  {['Name', 'Born', 'Sex', 'Lives at', 'Identifiers', 'Server id', 'Updated', ''].map((h) => <th key={h} className="px-2 py-1.5 font-medium">{h}</th>)}
                 </tr>
               </thead>
               <tbody>
