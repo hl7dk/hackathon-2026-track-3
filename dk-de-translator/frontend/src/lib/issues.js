@@ -23,6 +23,12 @@ const ASK = [
 const RECEIVER = [
   { match: /Patient\.identifier:Patientennummer/, note: 'The hospital assigns its own patient number (Patientennummer) on admission.' },
   { match: /isik-con1/, note: 'The hospital links each diagnosis to its own encounter (Fall) when it documents it.' },
+  // The receiver's server has no SNOMED CT (licensed per country, the German edition from BfArM), so it cannot
+  // check a SNOMED code against a value set. The codes are the ones the German profiles ask for.
+  {
+    match: /snomed\.info\/sct.*(is ignored\/not-present|could not be found|Failed to expand)|(is ignored\/not-present|could not be found|Failed to expand).*snomed\.info\/sct/s,
+    note: "The receiver's server has no SNOMED CT loaded, so it cannot check SNOMED codes against its value sets. The code is the one the German profile asks for; a real receiver has a SNOMED CT terminology server.",
+  },
 ];
 
 const PARTIAL_DATE = /^\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?)?$/;

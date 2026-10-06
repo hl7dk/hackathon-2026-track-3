@@ -48,7 +48,8 @@ const name = (p) => p.name?.map((n) => [...(n.given ?? []), n.family].join(' '))
 const addresses = (p) => (p.address ?? []).map((a) => a.text
   ?? [...(a.line ?? []), [a.postalCode, a.city].filter(Boolean).join(' '), a.country].filter(Boolean).join(', '));
 
-function PatientRow({ patient, server, onDeleted }) {
+// refresh: changes on every reload of the list; an open record is then read again.
+function PatientRow({ patient, server, onDeleted, refresh }) {
   const baseUrl = server.url;
   const [record, setRecord] = useState(null);
   const [open, setOpen] = useState(false);
@@ -79,15 +80,24 @@ function PatientRow({ patient, server, onDeleted }) {
     setMessage({ text: `Deleted ${r.resourceType}/${r.id}.`, kind: 'ok' });
   });
 
+  // no-cache: HAPI otherwise may answer a repeated $everything from its cache, missing what just arrived.
+  const readRecord = async () => {
+    const entry = await fetchAll(baseUrl, `Patient/${patient.id}/$everything?_count=200`, { 'Cache-Control': 'no-cache' });
+    setRecord({ resourceType: 'Bundle', type: 'collection', entry });
+  };
+
   const toggle = () => {
     setOpen(!open);
     if (record || open) return;
     runStep(setMessage, setBusy, 'Loading record…', async () => {
-      const entry = await fetchAll(baseUrl, `Patient/${patient.id}/$everything?_count=200`);
-      setRecord({ resourceType: 'Bundle', type: 'collection', entry });
+      await readRecord();
       setMessage(null);
     });
   };
+
+  useEffect(() => {
+    if (open && refresh) readRecord().catch((err) => setMessage({ text: err.message, kind: 'err' }));
+  }, [refresh]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const counts = record && Object.entries(
     record.entry.reduce((acc, e) => ({ ...acc, [e.resource.resourceType]: (acc[e.resource.resourceType] ?? 0) + 1 }), {}),
@@ -152,18 +162,41 @@ export default function DashboardApp() {
   const [filter, setFilter] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState(null);
+  const [refresh, setRefresh] = useState(0);
+  const [auto, setAuto] = useState(false);
   const server = SERVERS.find((s) => s.id === serverId);
 
-  // done: what happened before the reload, e.g. a deletion, shown in front of the count.
-  const load = (done = '') => runStep(setMessage, setBusy, `Reading patients from ${server.label}…`, async () => {
-    setPatients(null);
-    // no-cache: HAPI otherwise may answer from its search cache, still listing a deleted patient.
+  // no-cache: HAPI otherwise may answer from its search cache, still listing a deleted patient.
+  const readPatients = async () => {
     const entries = await fetchAll(server.url, 'Patient?_count=200', { 'Cache-Control': 'no-cache' });
     setPatients(entries.map((e) => e.resource));
-    setMessage({ text: `${done ? `${done} ` : ''}${entries.length} patient${entries.length === 1 ? '' : 's'} on ${server.label}.`, kind: 'ok' });
+    setRefresh((n) => n + 1);
+    return entries.length;
+  };
+  const count = (n) => `${n} patient${n === 1 ? '' : 's'} on ${server.label}`;
+
+  // done: what happened before the reload, e.g. a deletion, shown in front of the count.
+  // The list stays while it reloads, and open patients stay open, with their records read again.
+  const load = (done = '') => runStep(setMessage, setBusy, `Reading patients from ${server.label}…`, async () => {
+    const n = await readPatients();
+    setMessage({ text: `${done ? `${done} ` : ''}${count(n)}.`, kind: 'ok' });
   });
 
-  useEffect(() => { load(); }, [serverId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    setPatients(null);
+    load();
+  }, [serverId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-refresh: the same as Reload every 10 seconds, without the progress message.
+  useEffect(() => {
+    if (!auto) return undefined;
+    const timer = setInterval(() => {
+      readPatients()
+        .then((n) => setMessage({ text: `${count(n)}, updated ${new Date().toLocaleTimeString()}.`, kind: 'ok' }))
+        .catch((err) => setMessage({ text: err.message, kind: 'err' }));
+    }, 10000);
+    return () => clearInterval(timer);
+  }, [auto, serverId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const needle = filter.trim().toLowerCase();
   const shown = (patients ?? []).filter((p) => !needle
@@ -192,6 +225,9 @@ export default function DashboardApp() {
               <input className={inputClass} placeholder="Name or identifier" value={filter} onChange={(e) => setFilter(e.target.value)} />
             </Field>
             <Button className="self-end" onClick={() => load()} disabled={busy}>Reload</Button>
+            <label className="flex items-center gap-1.5 self-end pb-1.5 text-sm text-slate-600">
+              <input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} /> Auto-refresh
+            </label>
           </>
         )}
       >
@@ -205,7 +241,7 @@ export default function DashboardApp() {
                 </tr>
               </thead>
               <tbody>
-                {shown.map((p) => <PatientRow key={`${serverId}/${p.id}`} patient={p} server={server} onDeleted={load} />)}
+                {shown.map((p) => <PatientRow key={`${serverId}/${p.id}`} patient={p} server={server} onDeleted={load} refresh={refresh} />)}
               </tbody>
             </table>
           </div>

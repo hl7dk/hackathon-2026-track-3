@@ -13,6 +13,41 @@ const coding = (c) => `${label(c.system)} ${c.code}`;
 // The validator's message without the "(from <profile>)" tail.
 const short = (issue) => issueText(issue).replace(/\s*\(from [^)]*\)\.?/, '').replace(/\s*\(defined in [^)]*\)/, '');
 
+// Issues on the same kind of resource (e.g. every blood pressure) and with the same note as one line: how
+// many resources, then each distinct message once, with how often it came up, folded away.
+function groupIssues(items) {
+  const groups = new Map();
+  for (const it of items) {
+    const label = describe(it.resource);
+    const key = `${label}|${it.note ?? ''}`;
+    if (!groups.has(key)) groups.set(key, { key, label, note: it.note, resources: new Set(), messages: new Map() });
+    const g = groups.get(key);
+    g.resources.add(it.index);
+    // Without the parts that differ per resource, e.g. 'Observation/172504'.
+    const m = short(it.issue).replace(/'[A-Za-z]+\/[^']+'/g, "'…'");
+    g.messages.set(m, (g.messages.get(m) ?? 0) + 1);
+  }
+  return [...groups.values()];
+}
+
+// summary(group): what the line says after the resource, e.g. how many kinds of error were fixed.
+function GroupedIssues({ items, mark, summary }) {
+  return groupIssues(items).map((g) => (
+    <li key={g.key}>
+      <details>
+        <summary className="cursor-pointer">
+          {mark} {g.label}{g.resources.size > 1 && ` ×${g.resources.size}`}: {summary(g)}
+        </summary>
+        <ul className="ml-5 mt-1 list-disc space-y-0.5 break-words text-xs text-slate-600">
+          {[...g.messages].map(([m, n]) => <li key={m}>{m}{n > 1 && ` (×${n})`}</li>)}
+        </ul>
+      </details>
+    </li>
+  ));
+}
+
+const kinds = (g) => `${g.messages.size} kind${g.messages.size === 1 ? '' : 's'} of error`;
+
 function Section({ tone, title, count, children }) {
   const color = {
     ok: 'border-green-300 bg-green-50',
@@ -115,9 +150,7 @@ export default function FixPanel({ conversion, converted, setConverted }) {
               {translated.map((r, i) => (
                 <li key={`t${i}`}>✓ {describe(r.resource)}: <code className="text-xs">{coding(r.from)}</code> → <code className="text-xs">{coding(r.to)}</code></li>
               ))}
-              {c.fixedByMap.map((f, i) => (
-                <li key={`f${i}`}>✓ {describe(f.resource)}: <span className="text-slate-600">was: {short(f.issue)}</span></li>
-              ))}
+              <GroupedIssues items={c.fixedByMap} mark="✓" summary={(g) => `${kinds(g)} fixed`} />
             </Section>
 
             {c.ask.length > 0 && (
@@ -134,18 +167,14 @@ export default function FixPanel({ conversion, converted, setConverted }) {
 
             {c.receiver.length > 0 && (
               <Section tone="receiver" title={`Left to ${target.label}`} count={c.receiver.length}>
-                {c.receiver.map((r, i) => (
-                  <li key={i}>→ {describe(r.resource)}: {r.note} <span className="block text-xs text-slate-500">{short(r.issue)}</span></li>
-                ))}
+                <GroupedIssues items={c.receiver} mark="→" summary={(g) => g.note} />
               </Section>
             )}
 
             {(c.other.length > 0 || unmapped.length > 0) && (
               <Section tone="err" title="Not solved" count={c.other.length + unmapped.length}>
                 {unmapped.map((r, i) => <li key={`u${i}`}>✗ {describe(r.resource)}: no mapping for <code className="text-xs">{coding(r.from)}</code></li>)}
-                {c.other.map((o, i) => (
-                  <li key={`o${i}`}>✗ {describe(o.resource)}: {short(o.issue)} {o.issue.expression?.[0] && <code className="text-xs text-slate-500">{o.issue.expression[0]}</code>}</li>
-                ))}
+                <GroupedIssues items={c.other} mark="✗" summary={kinds} />
               </Section>
             )}
           </div>
