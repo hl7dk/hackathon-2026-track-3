@@ -1,0 +1,183 @@
+map "https://hl7-your-health.projects.alexandrainst.dk/fhir/StructureMap/dk-to-de-common" = "DkToDeCommon"
+
+// Groups shared by dk-to-isik and dk-to-kbv: copy the DK-Core resources element by element and put a
+// German coding in front of every Danish one, through the ConceptMaps in ../terminology/conceptmaps/.
+// Elements the two German targets model differently (MedicationStatement.medication[x], the
+// AllergyIntolerance codings) are left to the target maps.
+
+// Codes
+
+group DeCodes(source src : CodeableConcept, target tgt : CodeableConcept) {
+  src.coding as c where system = 'urn:oid:1.2.208.176.2.4.12' -> tgt.coding as t then SksToIcd10gm(c, t) "sks";
+  src.coding as c where system = 'urn:oid:1.2.208.176.2.31' -> tgt.coding as t then Icpc2ToIcd10gm(c, t) "icpc2";
+  src.coding as c where system = 'http://www.whocc.no/atc' -> tgt.coding as t then AtcWhoToBfarm(c, t) "atc";
+  src.coding as c -> tgt.coding = c "keep";
+  src.text as v -> tgt.text = v "text";
+}
+
+// translate() with 'code', not 'Coding': the German codings need a version, which a ConceptMap target has no place for.
+group SksToIcd10gm(source src : Coding, target tgt : Coding) {
+  src -> tgt.system = 'http://fhir.de/CodeSystem/bfarm/icd-10-gm', tgt.version = '2026' "system";
+  src -> tgt.code = translate(src, 'https://hl7-your-health.projects.alexandrainst.dk/fhir/ConceptMap/sks-to-icd10gm', 'code') "code";
+}
+
+group Icpc2ToIcd10gm(source src : Coding, target tgt : Coding) {
+  src -> tgt.system = 'http://fhir.de/CodeSystem/bfarm/icd-10-gm', tgt.version = '2026' "system";
+  src -> tgt.code = translate(src, 'https://hl7-your-health.projects.alexandrainst.dk/fhir/ConceptMap/icpc2-to-icd10gm', 'code') "code";
+}
+
+group AtcWhoToBfarm(source src : Coding, target tgt : Coding) {
+  src -> tgt.system = 'http://fhir.de/CodeSystem/bfarm/atc', tgt.version = '2025' "system";
+  src -> tgt.code = translate(src, 'https://hl7-your-health.projects.alexandrainst.dk/fhir/ConceptMap/atc-who-to-bfarm', 'code') "code";
+  src.display as v -> tgt.display = v "display";
+}
+
+// Resources: everything except meta, which the target maps set to the German profile
+
+group CopyPatient(source src : Patient, target tgt : Patient) {
+  src.id as v -> tgt.id = v "id";
+  src.text as v -> tgt.text = v "text";
+  src.identifier as v -> tgt.identifier = v "identifier";
+  src.active as v -> tgt.active = v "active";
+  src.name as v -> tgt.name = v "name";
+  src.telecom as v -> tgt.telecom = v "telecom";
+  src.gender as v -> tgt.gender = v "gender";
+  src.birthDate as v -> tgt.birthDate = v "birthDate";
+  src.deceased as v -> tgt.deceased = v "deceased";
+  src.address as v -> tgt.address = v "address";
+  src.maritalStatus as v -> tgt.maritalStatus = v "maritalStatus";
+  src.contact as v -> tgt.contact = v "contact";
+  src.communication as v -> tgt.communication = v "communication";
+}
+
+group CopyCondition(source src : Condition, target tgt : Condition) {
+  src.id as v -> tgt.id = v "id";
+  src.text as v -> tgt.text = v "text";
+  src.identifier as v -> tgt.identifier = v "identifier";
+  src.clinicalStatus as v -> tgt.clinicalStatus = v "clinicalStatus";
+  src.verificationStatus as v -> tgt.verificationStatus = v "verificationStatus";
+  src.category as v -> tgt.category = v "category";
+  src.severity as v -> tgt.severity = v "severity";
+  src.code as c -> tgt.code as t then DeCodes(c, t) "code";
+  src.bodySite as v -> tgt.bodySite = v "bodySite";
+  src.subject as v -> tgt.subject = v "subject";
+  src.encounter as v -> tgt.encounter = v "encounter";
+  src.onset as v -> tgt.onset = v "onset";
+  src.abatement as v -> tgt.abatement = v "abatement";
+  src.recordedDate as v -> tgt.recordedDate = v "recordedDate";
+  src.recorder as v -> tgt.recorder = v "recorder";
+  src.asserter as v -> tgt.asserter = v "asserter";
+  src.note as v -> tgt.note = v "note";
+}
+
+group CopyMedicationStatement(source src : MedicationStatement, target tgt : MedicationStatement) {
+  src.id as v -> tgt.id = v "id";
+  src.text as v -> tgt.text = v "text";
+  src.identifier as v -> tgt.identifier = v "identifier";
+  src.status as v -> tgt.status = v "status";
+  src.statusReason as v -> tgt.statusReason = v "statusReason";
+  src.category as v -> tgt.category = v "category";
+  src.subject as v -> tgt.subject = v "subject";
+  src.context as v -> tgt.context = v "context";
+  src.effective as v -> tgt.effective = v "effective";
+  src.dateAsserted as v -> tgt.dateAsserted = v "dateAsserted";
+  src.informationSource as v -> tgt.informationSource = v "informationSource";
+  src.reasonCode as c -> tgt.reasonCode as t then DeCodes(c, t) "reasonCode";
+  src.note as v -> tgt.note = v "note";
+  src.dosage as v -> tgt.dosage = v "dosage";
+}
+
+group CopyAllergyIntolerance(source src : AllergyIntolerance, target tgt : AllergyIntolerance) {
+  src.id as v -> tgt.id = v "id";
+  src.text as v -> tgt.text = v "text";
+  src.identifier as v -> tgt.identifier = v "identifier";
+  src.type as v -> tgt.type = v "type";
+  src.category as v -> tgt.category = v "category";
+  src.criticality as v -> tgt.criticality = v "criticality";
+  src.patient as v -> tgt.patient = v "patient";
+  src.encounter as v -> tgt.encounter = v "encounter";
+  src.onset as v -> tgt.onset = v "onset";
+  src.recordedDate as v -> tgt.recordedDate = v "recordedDate";
+  src.recorder as v -> tgt.recorder = v "recorder";
+  src.asserter as v -> tgt.asserter = v "asserter";
+  src.note as v -> tgt.note = v "note";
+  src.reaction as v -> tgt.reaction = v "reaction";
+}
+
+// Observations. Vital signs are LOINC on both sides, so the codes stay; the German vital-sign profiles add
+// a SNOMED CT coding next to each LOINC one, and KBV wants a version and display on both. Other
+// Observations are copied with their codes as they are.
+
+group CopyObservation(source src : Observation, target tgt : Observation) {
+  src.id as v -> tgt.id = v "id";
+  src.text as v -> tgt.text = v "text";
+  // Dropped: an identifier claiming to be a URI (urn:ietf:rfc:3986) whose value is not one, e.g. 'Observation/172504',
+  // the source server's own id, which the German validators reject and which means nothing on the receiver.
+  src.identifier as v where (system = 'urn:ietf:rfc:3986' and value.contains(':').not()).not() -> tgt.identifier = v "identifier";
+  src.basedOn as v -> tgt.basedOn = v "basedOn";
+  src.partOf as v -> tgt.partOf = v "partOf";
+  src.status as v -> tgt.status = v "status";
+  src.category as v -> tgt.category = v "category";
+  src.code as c -> tgt.code as t then VitalCode(c, t) "code";
+  src.subject as v -> tgt.subject = v "subject";
+  src.focus as v -> tgt.focus = v "focus";
+  src.encounter as v -> tgt.encounter = v "encounter";
+  src.effective as v -> tgt.effective = v "effective";
+  src.issued as v -> tgt.issued = v "issued";
+  src.performer as v -> tgt.performer = v "performer";
+  src.value : Quantity as q -> tgt.value = create('Quantity') as t then VitalQuantity(q, t) "valueQuantity";
+  src.value as v where ($this is Quantity).not() -> tgt.value = v "value";
+  src.dataAbsentReason as v -> tgt.dataAbsentReason = v "dataAbsentReason";
+  src.interpretation as v -> tgt.interpretation = v "interpretation";
+  src.note as v -> tgt.note = v "note";
+  src.bodySite as v -> tgt.bodySite = v "bodySite";
+  src.method as v -> tgt.method = v "method";
+  src.specimen as v -> tgt.specimen = v "specimen";
+  src.device as v -> tgt.device = v "device";
+  src.referenceRange as v -> tgt.referenceRange = v "referenceRange";
+  src.hasMember as v -> tgt.hasMember = v "hasMember";
+  src.derivedFrom as v -> tgt.derivedFrom = v "derivedFrom";
+  src.component as c -> tgt.component as t then VitalComponent(c, t) "component";
+  // SpO2: the German profiles are for pulse oximetry, which says how it was measured.
+  src where code.coding.where(system = 'http://loinc.org' and code = '2708-6').exists() and method.exists().not() -> tgt.method as m, m.coding as mc, mc.system = 'http://snomed.info/sct', mc.version = 'http://snomed.info/sct/900000000000207008/version/20250101', mc.code = '448703006', mc.display = 'Pulse oximeter' "spo2Method";
+}
+
+group VitalComponent(source src, target tgt) {
+  src.code as c -> tgt.code as t then VitalCode(c, t) "code";
+  src.value : Quantity as q -> tgt.value = create('Quantity') as t then VitalQuantity(q, t) "valueQuantity";
+  src.value as v where ($this is Quantity).not() -> tgt.value = v "value";
+  src.dataAbsentReason as v -> tgt.dataAbsentReason = v "dataAbsentReason";
+  src.interpretation as v -> tgt.interpretation = v "interpretation";
+  src.referenceRange as v -> tgt.referenceRange = v "referenceRange";
+}
+
+// KBV fixes the unit text of mm[Hg] to 'mm Hg' (the second rule overwrites the copied one).
+group VitalQuantity(source src : Quantity, target tgt : Quantity) {
+  src.value as v -> tgt.value = v "value";
+  src.comparator as v -> tgt.comparator = v "comparator";
+  src.unit as v -> tgt.unit = v "unit";
+  src.system as v -> tgt.system = v "system";
+  src.code as v -> tgt.code = v "code";
+  src where code = 'mm[Hg]' -> tgt.unit = 'mm Hg' "mmHg";
+}
+
+// LOINC codings get a version, the vital signs a SNOMED CT coding (and SpO2 the pulse oximetry LOINC code).
+group VitalCode(source src : CodeableConcept, target tgt : CodeableConcept) {
+  src.coding as c where system = 'http://loinc.org' -> tgt.coding as t then LoincVersioned(c, t) "loinc";
+  src.coding as c where system != 'http://loinc.org' -> tgt.coding = c "other";
+  src.text as v -> tgt.text = v "text";
+  src where coding.where(system = 'http://loinc.org' and code = '85354-9').exists() -> tgt.coding as t, t.system = 'http://snomed.info/sct', t.version = 'http://snomed.info/sct/900000000000207008/version/20250101', t.code = '75367002', t.display = 'Blood pressure' "bp";
+  src where coding.where(system = 'http://loinc.org' and code = '8480-6').exists() -> tgt.coding as t, t.system = 'http://snomed.info/sct', t.version = 'http://snomed.info/sct/900000000000207008/version/20250101', t.code = '271649006', t.display = 'Systolic blood pressure' "systolic";
+  src where coding.where(system = 'http://loinc.org' and code = '8462-4').exists() -> tgt.coding as t, t.system = 'http://snomed.info/sct', t.version = 'http://snomed.info/sct/900000000000207008/version/20250101', t.code = '271650006', t.display = 'Diastolic blood pressure' "diastolic";
+  src where coding.where(system = 'http://loinc.org' and code = '8867-4').exists() -> tgt.coding as t, t.system = 'http://snomed.info/sct', t.version = 'http://snomed.info/sct/900000000000207008/version/20250101', t.code = '364075005', t.display = 'Heart rate' "heartRate";
+  src where coding.where(system = 'http://loinc.org' and code = '2708-6').exists() -> tgt.coding as t, t.system = 'http://snomed.info/sct', t.version = 'http://snomed.info/sct/900000000000207008/version/20250101', t.code = '431314004', t.display = 'Peripheral oxygen saturation' "spo2";
+  src where coding.where(system = 'http://loinc.org' and code = '2708-6').exists() and coding.where(system = 'http://loinc.org' and code = '59408-5').exists().not() -> tgt.coding as t, t.system = 'http://loinc.org', t.version = '2.81', t.code = '59408-5', t.display = 'Oxygen saturation in Arterial blood by Pulse oximetry' "spo2Pulse";
+}
+
+group LoincVersioned(source src : Coding, target tgt : Coding) {
+  src.system as v -> tgt.system = v "system";
+  src.version as v -> tgt.version = v "version";
+  src.code as v -> tgt.code = v "code";
+  src.display as v -> tgt.display = v "display";
+  src where version.exists().not() -> tgt.version = '2.81' "loincVersion";
+}

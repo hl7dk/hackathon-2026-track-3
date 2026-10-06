@@ -1,0 +1,55 @@
+map "https://hl7-your-health.projects.alexandrainst.dk/fhir/StructureMap/dk-to-isik" = "DkToIsik"
+
+// A DK-Core Bundle (a $everything searchset or a transaction file) to a collection Bundle for a
+// German hospital (ISiK / MII). Other resource types pass through unchanged.
+// Not filled here, because the Danish record does not have them: Condition.recordedDate and
+// MedicationStatement.effective[x] (the patient is asked), Patient.identifier:Patientennummer and
+// the Encounter for isik-con1 (assigned by the hospital).
+
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" alias Bundle as source
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" alias Bundle as target
+
+imports "https://hl7-your-health.projects.alexandrainst.dk/fhir/StructureMap/dk-to-de-common"
+
+group DkToIsik(source src : Bundle, target tgt : Bundle) {
+  src -> tgt.type = 'collection' "type";
+  src.entry as e -> tgt.entry as t then IsikEntry(e, t) "entry";
+}
+
+group IsikEntry(source src, target tgt) {
+  src.fullUrl as v -> tgt.fullUrl = v "fullUrl";
+  src.resource : Patient as r -> tgt.resource = create('Patient') as t then IsikPatient(r, t) "patient";
+  src.resource : Condition as r -> tgt.resource = create('Condition') as t then IsikCondition(r, t) "condition";
+  src.resource : MedicationStatement as r -> tgt.resource = create('MedicationStatement') as t then MiiMedicationStatement(r, t) "medicationStatement";
+  src.resource : AllergyIntolerance as r -> tgt.resource = create('AllergyIntolerance') as t then IsikAllergyIntolerance(r, t) "allergyIntolerance";
+  src.resource : Observation as r -> tgt.resource = create('Observation') as t then IsikObservation(r, t) "observation";
+  src.resource as r where ($this is Patient or $this is Condition or $this is MedicationStatement or $this is AllergyIntolerance or $this is Observation).not() -> tgt.resource = r "other";
+}
+
+group IsikPatient(source src : Patient, target tgt : Patient) extends CopyPatient {
+  src -> tgt.meta as m, m.profile = 'https://gematik.de/fhir/isik/StructureDefinition/ISiKPatient' "profile";
+}
+
+group IsikCondition(source src : Condition, target tgt : Condition) extends CopyCondition {
+  src -> tgt.meta as m, m.profile = 'https://gematik.de/fhir/isik/StructureDefinition/ISiKDiagnose' "profile";
+}
+
+group MiiMedicationStatement(source src : MedicationStatement, target tgt : MedicationStatement) extends CopyMedicationStatement {
+  src -> tgt.meta as m, m.profile = 'https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement' "profile";
+  src.medication : CodeableConcept as c -> tgt.medication = create('CodeableConcept') as t then DeCodes(c, t) "medication";
+  src.medication : Reference as v -> tgt.medication = v "medicationReference";
+}
+
+group IsikAllergyIntolerance(source src : AllergyIntolerance, target tgt : AllergyIntolerance) extends CopyAllergyIntolerance {
+  src -> tgt.meta as m, m.profile = 'https://gematik.de/fhir/isik/StructureDefinition/ISiKAllergieUnvertraeglichkeit' "profile";
+  src.clinicalStatus as v -> tgt.clinicalStatus = v "clinicalStatus";
+  src.verificationStatus as v -> tgt.verificationStatus = v "verificationStatus";
+  src.code as v -> tgt.code = v "code";
+}
+
+// Vital signs get the German profile for their LOINC code; other Observations keep no profile.
+group IsikObservation(source src : Observation, target tgt : Observation) extends CopyObservation {
+  src where code.coding.where(system = 'http://loinc.org' and code = '85354-9').exists() -> tgt.meta as m, m.profile = 'http://fhir.de/StructureDefinition/observation-de-vitalsign-blutdruck' "bloodPressure";
+  src where code.coding.where(system = 'http://loinc.org' and code = '8867-4').exists() -> tgt.meta as m, m.profile = 'http://fhir.de/StructureDefinition/observation-de-vitalsign-herzfrequenz' "heartRate";
+  src where code.coding.where(system = 'http://loinc.org' and code = '2708-6').exists() -> tgt.meta as m, m.profile = 'http://fhir.de/StructureDefinition/observation-de-vitalsign-sauerstoffsaettigung-pulsoximetrie' "oxygenSaturation";
+}
