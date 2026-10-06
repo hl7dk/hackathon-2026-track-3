@@ -1,10 +1,10 @@
-// Step 4. Choose who gets what (the consent, a placeholder), then convert (step 5 checks and sends).
+// Step 4. Choose who gets what (the consent), then convert (step 5 checks and sends).
 // Only the resource types the patient ticked are converted and sent.
 import { useState } from 'react';
 import { PURPOSES, SCOPES, TARGETS } from '../lib/config.js';
 import { convert } from '../lib/convert.js';
 import { filterByScopes } from '../lib/sources.js';
-import { Button, Card, Field, PlaceholderBadge, Status, inputClass, runStep } from './ui.jsx';
+import { Button, Card, Field, Status, inputClass, runStep } from './ui.jsx';
 
 export default function SharePanel({ record, onConverted, targetId, setTargetId }) {
   const [scopes, setScopes] = useState(SCOPES.map((s) => s.type));
@@ -44,8 +44,8 @@ export default function SharePanel({ record, onConverted, targetId, setTargetId 
 
   return (
     <Card step="4" title="Share">
-      <div className="rounded-md border-2 border-dashed border-amber-400 p-4">
-        <div className="mb-3 flex items-center gap-2 text-sm font-medium">Consent <PlaceholderBadge /></div>
+      <div className="rounded-md border border-slate-200 p-4">
+        <div className="mb-3 flex items-center gap-2 text-sm font-medium">Consent</div>
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Share with">
             <select className={inputClass} value={targetId} onChange={(e) => { setTargetId(e.target.value); reset(); }}>

@@ -54,11 +54,6 @@ export default function App() {
         </p>
       </header>
 
-      <div className="rounded-md border border-dashed border-amber-400 bg-amber-50 px-4 py-2 text-sm text-amber-900">
-        <strong>Draft prototype.</strong> Sign-in uses a demo MitID issuer, not real MitID, and the wallet runs on the server. Consent to share with a German provider is a placeholder: nothing is enforced.
-        The DK → DE translation runs the FHIR maps on Matchbox.
-      </div>
-
       <div className={`grid items-start gap-4 ${session ? 'lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]' : ''}`}>
         <WalletPanel session={session} onSession={setSession} record={record} onRecord={onRecord} />
         {session && <EventLog since={session.since ?? 0} />}
