@@ -1,30 +1,14 @@
 // Getting the record into the wallet. requestRecord() is the seam for the consent /
-// wallet group: today there is no login or token, it reads the source server directly.
-import { CPR_SYSTEM } from './config.js';
+// wallet group: the wallet presents its identity credential to the source's verifier
+// (server/verifier.js), which returns the record of the patient the credential is about.
 
-const FHIR_JSON = { Accept: 'application/fhir+json' };
-
-async function getJson(url) {
-  const res = await fetch(url, { headers: FHIR_JSON });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText} from ${url}`);
-  return res.json();
-}
-
-// Patient by CPR, then Patient/$everything, following paging links.
-export async function requestRecord({ baseUrl, cpr }) {
-  const search = await getJson(`${baseUrl}/Patient?identifier=${encodeURIComponent(`${CPR_SYSTEM}|${cpr}`)}`);
-  const patient = search.entry?.[0]?.resource;
-  if (!patient) throw new Error(`No patient with CPR ${cpr} on ${baseUrl}`);
-
-  const entries = [];
-  let next = `${baseUrl}/Patient/${patient.id}/$everything?_count=200`;
-  while (next) {
-    const page = await getJson(next);
-    entries.push(...(page.entry ?? []));
-    // HAPI writes absolute paging links; keep going through baseUrl (it may be a proxy path).
-    next = page.link?.find((l) => l.relation === 'next')?.url?.replace(/^https?:\/\/[^/]+\/fhir/, baseUrl);
-  }
-  return { resourceType: 'Bundle', type: 'collection', entry: entries };
+export async function requestRecord({ sourceId, credential }) {
+  const res = await fetch(`/verifier/record?source=${encodeURIComponent(sourceId)}`, {
+    headers: { Accept: 'application/fhir+json', Authorization: `Bearer ${credential}` },
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.error ?? `${res.status} ${res.statusText}`);
+  return json;
 }
 
 // A bundle the patient already has, e.g. downloaded from sundhed.dk.

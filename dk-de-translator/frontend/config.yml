@@ -1,4 +1,4 @@
-# Front end configuration. Restart `npm run dev` after editing.
+# Front end configuration. `npm run dev` restarts itself when this file changes.
 #
 # Each server has a url the page calls. With proxyTo set, `npm run dev` forwards
 # that path to the real server, so CORS does not come into play. auth: basic makes
@@ -7,11 +7,16 @@
 # For the local containers (docker compose --profile local up -d), use
 # proxyTo http://localhost:28080/fhir (dk), 28081 (de-hospital), 28082 (de-gp) and drop auth.
 
-# Who the placeholder sign-in logs in.
-patient:
-  name: Anne Sørensen
-  login: MitID test user A.Sorensen
-  cpr: "1109859996"
+# Who can sign in with the demo MitID issuer (dev server, see server/issuer.js).
+# The issued identity credential proves the CPR; the verifier only returns that patient's record.
+# These are the Danish test patients in ../data/in.
+testUsers:
+  - { id: anne, name: Anne Sørensen, login: MitID test user A.Sorensen, cpr: "1109859996" }
+  - { id: emma, name: Emma Nielsen, login: MitID test user E.Nielsen, cpr: "1403174012" }
+  - { id: mette, name: Mette Hansen, login: MitID test user M.Hansen, cpr: "2208712468" }
+
+wallet:
+  ttlMinutes: 15   # how long an identity credential is valid
 
 cprSystem: urn:oid:1.2.208.176.1.2
 

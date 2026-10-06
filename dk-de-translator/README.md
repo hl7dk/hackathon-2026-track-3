@@ -57,7 +57,7 @@ Reports go to `data/out/<hospital|gp>/report.html`. Set `INPUTS` to validate spe
 
 ## Frontend
 
-A draft UI in `frontend/` (Vite, React, Tailwind): get the patient's records into a wallet, look at them next to their validation output, give consent, convert and send to a German server. The wallet, sign-in and consent are placeholders (marked as such on the page): every button just works, nothing is authenticated or enforced. Convert passes the data on unchanged for now.
+A draft UI in `frontend/` (Vite, React, Tailwind): get the patient's records into a wallet, look at them next to their validation output, give consent, convert and send to a German server. Consent is a placeholder (marked as such on the page): nothing is enforced. Convert passes the data on unchanged for now.
 
 With `.env` in place:
 
@@ -67,8 +67,18 @@ With `.env` in place:
 
 http://localhost:28090/patients.html lists the patients on each server; click one to see their record.
 
-"Get my records" in the wallet looks up the patient by CPR on the Danish source and reads `Patient/$everything`, so the patient has to be on that server first. Alternatively, load a bundle file with the file picker.
+### Wallet sign-in
+
+The wallet proves who the patient is with a small issuer → wallet → verifier setup, all in the dev server (`frontend/server/`):
+
+- **Issuer** (`issuer.js`) stands in for MitID. "Sign in with MitID" lets you pick a test user (`testUsers` in `config.yml`: Anne, Emma, Mette from `data/in`) and returns an identity credential: a JWT signed with ES256, with the CPR as subject, valid for `wallet.ttlMinutes`. The signing key is made at startup and never leaves the dev server, so restarting `npm run dev` invalidates all credentials. The public key is at `/issuer/jwks`.
+- **Wallet** (`src/components/WalletPanel.jsx`, `src/lib/identity.js`) stores the credential in sessionStorage (it survives a reload, not closing the tab) and presents it as a bearer token.
+- **Verifier** (`verifier.js`) answers `GET /verifier/record?source=<id>`: it checks the signature, issuer and expiry, takes the CPR from the credential, and returns that patient's `Patient/$everything` from the source. The browser never says which CPR it wants, so getting someone else's record means forging the signature. "Try a forged credential" (under the raw JWT) shows this: it changes the CPR in the credential and the verifier refuses it.
+
+The patient has to be on the Danish source first. Alternatively, load a bundle file with the file picker.
+
+Not covered: the credential is not bound to a device key, so a copied token works until it expires; and the plain proxy paths (`/datasource1/fhir`, used by validation and `patients.html`) are still open.
 
 Validation uses `$validate` on the HAPI server you pick, so it needs the IGs loaded there. On a German server each resource is checked as if it claimed that server's profile, the same mapping as the CLI validators.
 
-Server URLs, profiles, the default patient and the share options are in `frontend/config.yml`. The page calls the Danish source as `/datasource1/fhir`, which `npm run dev` proxies to the shared server, adding the credentials from `.env` (`auth: basic`) so they never reach the browser. The German targets are the local servers started by `./dev.sh`, called as `/local-de-hospital/fhir` and `/local-de-gp/fhir` and proxied to ports 28081 and 28082 without credentials. To send to the shared German servers instead, point them at `datasource2` and `datasource3` with `auth: basic` (see the comment above `targets` in `config.yml`).
+Server URLs, profiles, the test users and the share options are in `frontend/config.yml`. The page calls the Danish source as `/datasource1/fhir`, which `npm run dev` proxies to the shared server, adding the credentials from `.env` (`auth: basic`) so they never reach the browser. The German targets are the local servers started by `./dev.sh`, called as `/local-de-hospital/fhir` and `/local-de-gp/fhir` and proxied to ports 28081 and 28082 without credentials. To send to the shared German servers instead, point them at `datasource2` and `datasource3` with `auth: basic` (see the comment above `targets` in `config.yml`).
