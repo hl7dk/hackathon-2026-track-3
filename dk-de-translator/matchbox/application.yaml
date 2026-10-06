@@ -1,0 +1,14 @@
+# Matchbox (HAPI-based, FHIR Mapping Language): runs StructureMap/$transform for the DK -> DE maps in ../maps/,
+# with the ConceptMaps from ../terminology/conceptmaps/ for translate(). Load both with ../maps/load.sh.
+# No IGs: the maps go from a base R4 Bundle to a base R4 Bundle, the German profiles are only URLs in meta.profile.
+# Validation stays on the German HAPI servers.
+server:
+  servlet:
+    context-path: /matchboxv3
+matchbox:
+  fhir:
+    context:
+      fhirVersion: 4.0.1
+      txServer: n/a
+      # Lets the maps and ConceptMaps be created and updated at runtime
+      onlyOneEngine: true

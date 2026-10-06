@@ -31,6 +31,18 @@ services:
       - ./hapi/de-gp.yaml:/configs/de-gp.yaml:ro
     profiles: ["local"]
 
+  # Matchbox (HAPI-based): StructureMap/$transform with the DK -> DE maps in maps/ and the ConceptMaps
+  # from terminology/, used by Convert in the frontend. docker compose up -d matchbox, then maps/load.sh.
+  # Data is lost when the container is recreated.
+  matchbox:
+    image: europe-west6-docker.pkg.dev/ahdis-ch/ahdis/matchbox:latest
+    ports:
+      - "28084:8080"
+    volumes:
+      - ./matchbox:/config:ro
+    mem_limit: 4g
+    profiles: ["local", "terminology"]
+
   # Two validators because hospital and GP use different de.basisprofil.r4 versions
   validator-hospital:
     build:
