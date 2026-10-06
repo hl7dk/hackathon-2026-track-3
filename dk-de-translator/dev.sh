@@ -28,5 +28,5 @@ AUTH="$(grep '^USERNAME=' .env | cut -d= -f2-):$(grep '^PASSWORD=' .env | cut -d
 ) &
 
 cd frontend
-[ -d node_modules ] || npm install
+npm install --no-audit --no-fund
 exec npm run dev

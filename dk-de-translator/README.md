@@ -74,7 +74,7 @@ A draft UI in `frontend/` (Vite, React, Tailwind): get the patient's records int
 With `.env` in place:
 
 ```sh
-./dev.sh        # http://localhost:28090 (runs npm install the first time)
+./dev.sh        # http://localhost:28090 (runs npm install first, so new dependencies are picked up)
 ```
 
 The dashboard, http://localhost:28090/patients.html, lists the patients on each server; click one to see their record, or delete them (on servers with `allowDelete` in `config.yml`) to run the demo again.
