@@ -1,5 +1,6 @@
 // Turning FHIR resources into table rows. Cells are plain strings, or arrays of
-// [label, code] pairs for codings and identifiers.
+// [label, code] pairs for codings and identifiers. row(r, resolve) gets a resolver
+// for references to other resources in the same bundle (see resolver below).
 import { SYSTEM_LABELS } from './config.js';
 
 const label = (system) => SYSTEM_LABELS[system] ?? system;
@@ -26,10 +27,15 @@ export const SECTIONS = [
   },
   {
     type: 'MedicationStatement', title: 'Medication', head: ['Medicine', 'Code', 'Dose', 'Status'],
-    row: (r) => [
-      text(r.medicationCodeableConcept) ?? r.medicationReference?.display,
-      codes(r.medicationCodeableConcept), r.dosage?.map((d) => d.text).join('; '), r.status,
-    ],
+    // German records put the codes (PZN, ATC) on a separate Medication resource, or a contained one.
+    row: (r, resolve) => {
+      const contained = r.contained?.find((c) => `#${c.id}` === r.medicationReference?.reference);
+      const code = r.medicationCodeableConcept ?? contained?.code ?? resolve?.(r, r.medicationReference)?.code;
+      return [
+        text(code) ?? r.medicationReference?.display,
+        codes(code), r.dosage?.map((d) => d.text).join('; '), r.status,
+      ];
+    },
   },
   {
     type: 'AllergyIntolerance', title: 'Allergies', head: ['Substance', 'Code', 'Criticality', 'Recorded'],
@@ -46,4 +52,21 @@ export function describe(r) {
   const section = SECTIONS.find((s) => s.type === r.resourceType);
   const first = section?.row(r)[0];
   return typeof first === 'string' && first ? `${r.resourceType}: ${first}` : r.resourceType;
+}
+
+// Looks up a Reference in the bundle: contained (#id), by fullUrl (urn:uuid from a
+// file) or by Type/id (from a server, where fullUrl is absolute).
+export function resolver(bundle) {
+  const byRef = new Map();
+  for (const { fullUrl, resource } of bundle.entry ?? []) {
+    if (!resource) continue;
+    if (fullUrl) byRef.set(fullUrl, resource);
+    if (resource.id) byRef.set(`${resource.resourceType}/${resource.id}`, resource);
+  }
+  return (from, ref) => {
+    const r = ref?.reference;
+    if (!r) return undefined;
+    if (r.startsWith('#')) return from.contained?.find((c) => c.id === r.slice(1));
+    return byRef.get(r) ?? byRef.get(r.match(/([A-Za-z]+\/[^/]+)$/)?.[1]);
+  };
 }

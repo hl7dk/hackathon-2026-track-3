@@ -44,7 +44,8 @@ sources:
     profiles: {}
 
 # Where converted data can be sent, and what each resource type is validated
-# against there (same mapping as the CLI validators, see ../README.md).
+# against there (same mapping as the CLI validators, see ../README.md). map: the StructureMap
+# Convert runs for this target. allowDelete: the dashboard (patients.html) can delete patients here.
 # The German targets are the shared servers datasource2 (hospital) and datasource3 (GP).
 # For the local containers instead (../dev.sh): /local-de-hospital/fhir and /local-de-gp/fhir,
 # proxyTo http://localhost:28081/fhir and 28082, without auth.
@@ -54,6 +55,8 @@ targets:
     url: /datasource2/fhir
     proxyTo: https://datasource2.hl7-your-health.projects.alexandrainst.dk/fhir
     auth: basic
+    map: https://hl7-your-health.projects.alexandrainst.dk/fhir/StructureMap/dk-to-isik
+    allowDelete: true
     profiles:
       Patient: https://gematik.de/fhir/isik/StructureDefinition/ISiKPatient
       Condition: https://gematik.de/fhir/isik/StructureDefinition/ISiKDiagnose
@@ -65,11 +68,26 @@ targets:
     url: /datasource3/fhir
     proxyTo: https://datasource3.hl7-your-health.projects.alexandrainst.dk/fhir
     auth: basic
+    map: https://hl7-your-health.projects.alexandrainst.dk/fhir/StructureMap/dk-to-kbv
+    allowDelete: true
     profiles:
       Patient: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Patient
       Condition: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_Condition_Diagnosis
       MedicationStatement: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_MedicationStatement
       AllergyIntolerance: https://fhir.kbv.de/StructureDefinition/KBV_PR_Base_AllergyIntolerance
+
+# Matchbox, holding the StructureMaps from ../maps/ and the ConceptMaps from ../terminology/ (load both with
+# ../maps/load.sh). Convert runs StructureMap/$transform there with the target's map.
+# The local matchbox container (docker compose up -d matchbox).
+transform:
+  id: matchbox
+  url: /local-matchbox/fhir
+  proxyTo: http://localhost:28084/matchboxv3/fhir
+  # Danish code system: the German one the maps add next to it. Only used to report what was translated.
+  systems:
+    urn:oid:1.2.208.176.2.4.12: http://fhir.de/CodeSystem/bfarm/icd-10-gm
+    urn:oid:1.2.208.176.2.31: http://fhir.de/CodeSystem/bfarm/icd-10-gm
+    http://www.whocc.no/atc: http://fhir.de/CodeSystem/bfarm/atc
 
 # Resource types the patient can choose to share. Patient is always included.
 scopes:
@@ -96,3 +114,4 @@ systemLabels:
   http://fhir.de/sid/gkv/kvid-10: KVNR
   http://fhir.de/CodeSystem/bfarm/icd-10-gm: ICD-10-GM
   http://fhir.de/CodeSystem/ifa/pzn: PZN
+  http://fhir.de/CodeSystem/bfarm/atc: ATC (BfArM)

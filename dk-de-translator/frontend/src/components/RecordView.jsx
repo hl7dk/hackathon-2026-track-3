@@ -1,5 +1,5 @@
 // A bundle as one table per resource type.
-import { SECTIONS } from '../lib/display.js';
+import { SECTIONS, resolver } from '../lib/display.js';
 
 function Cell({ value }) {
   if (!Array.isArray(value)) return value ?? '';
@@ -12,6 +12,7 @@ function Cell({ value }) {
 
 export default function RecordView({ bundle }) {
   const resources = (bundle.entry ?? []).map((e) => e.resource);
+  const resolve = resolver(bundle);
   const known = new Set(SECTIONS.map((s) => s.type));
   const other = resources.filter((r) => !known.has(r.resourceType));
 
@@ -35,7 +36,7 @@ export default function RecordView({ bundle }) {
                 <tbody>
                   {rows.map((r, i) => (
                     <tr key={r.id ?? i} className="border-b border-slate-100 align-top">
-                      {section.row(r).map((c, j) => <td key={j} className="px-2 py-1.5"><Cell value={c} /></td>)}
+                      {section.row(r, resolve).map((c, j) => <td key={j} className="px-2 py-1.5"><Cell value={c} /></td>)}
                     </tr>
                   ))}
                 </tbody>

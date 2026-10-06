@@ -1,5 +1,6 @@
 // Which patients a server holds, and what each one's record contains.
 // Served at /patients.html by `npm run dev`; reads the servers through the same proxy as the main page.
+// On servers with allowDelete in config.yml a patient can be deleted, to run the demo again.
 import { useEffect, useState } from 'react';
 import { SERVERS, SYSTEM_LABELS } from '../lib/config.js';
 import RecordView from '../components/RecordView.jsx';
@@ -8,11 +9,11 @@ import { Button, Card, Field, Json, Status, inputClass, runStep } from '../compo
 const FHIR_JSON = { Accept: 'application/fhir+json' };
 
 // All entries of a search, following paging links through baseUrl (HAPI writes absolute links).
-async function fetchAll(baseUrl, path) {
+async function fetchAll(baseUrl, path, headers = {}) {
   const entries = [];
   let next = `${baseUrl}/${path}`;
   while (next) {
-    const res = await fetch(next, { headers: FHIR_JSON });
+    const res = await fetch(next, { headers: { ...FHIR_JSON, ...headers } });
     if (!res.ok) throw new Error(`${res.status} ${res.statusText} from ${next}`);
     const page = await res.json();
     entries.push(...(page.entry ?? []));
@@ -21,13 +22,47 @@ async function fetchAll(baseUrl, path) {
   return entries;
 }
 
+// Shared resources other patients may point at stay; deleting them would make the transaction fail.
+const SHARED = ['Practitioner', 'PractitionerRole', 'Organization', 'Location', 'Medication'];
+
+// Deletes the patient and everything in their record in one transaction. Returns the number of resources deleted.
+async function deletePatient(baseUrl, id) {
+  const entry = (await fetchAll(baseUrl, `Patient/${id}/$everything?_count=200`))
+    .filter((e) => !SHARED.includes(e.resource.resourceType))
+    .map((e) => ({ request: { method: 'DELETE', url: `${e.resource.resourceType}/${e.resource.id}` } }));
+  const res = await fetch(baseUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/fhir+json', ...FHIR_JSON },
+    body: JSON.stringify({ resourceType: 'Bundle', type: 'transaction', entry }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    const issues = body?.issue?.map((i) => i.diagnostics).filter(Boolean).join('; ');
+    throw new Error(`${res.status} ${res.statusText}${issues ? `: ${issues}` : ''}`);
+  }
+  return entry.length;
+}
+
 const name = (p) => p.name?.map((n) => [...(n.given ?? []), n.family].join(' ')).join(', ') || '(no name)';
 
-function PatientRow({ patient, baseUrl }) {
+function PatientRow({ patient, server, onDeleted }) {
+  const baseUrl = server.url;
   const [record, setRecord] = useState(null);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState(null);
+  const [confirming, setConfirming] = useState(false);
+
+  const remove = (e) => {
+    e.stopPropagation();
+    if (!confirming) return setConfirming(true);
+    setConfirming(false);
+    setOpen(true);
+    runStep(setMessage, setBusy, `Deleting ${name(patient)}…`, async () => {
+      const n = await deletePatient(baseUrl, patient.id);
+      onDeleted(`Deleted ${name(patient)} (${n} resources) from ${server.label}.`);
+    });
+  };
 
   const toggle = () => {
     setOpen(!open);
@@ -58,10 +93,20 @@ function PatientRow({ patient, baseUrl }) {
         </td>
         <td className="px-2 py-1.5"><code className="text-xs text-slate-500">{patient.id}</code></td>
         <td className="px-2 py-1.5 text-slate-500">{patient.meta?.lastUpdated?.slice(0, 10)}</td>
+        <td className="px-2 py-1.5 text-right">
+          {server.allowDelete && (
+            <span className="inline-flex gap-1">
+              <Button className={confirming ? 'border-red-700 bg-red-700 text-white hover:bg-red-800' : ''} disabled={busy} onClick={remove}>
+                {confirming ? 'Delete everything?' : 'Delete'}
+              </Button>
+              {confirming && <Button onClick={(e) => { e.stopPropagation(); setConfirming(false); }}>Cancel</Button>}
+            </span>
+          )}
+        </td>
       </tr>
       {open && (
         <tr className="border-b border-slate-200 bg-slate-50">
-          <td colSpan={6} className="px-4 py-3">
+          <td colSpan={7} className="px-4 py-3">
             {/* w-0 min-w-full: the record fills the row without widening the table (long raw FHIR lines scroll inside). */}
             <div className="w-0 min-w-full">
               <Status message={message} />
@@ -82,7 +127,7 @@ function PatientRow({ patient, baseUrl }) {
   );
 }
 
-export default function PatientsApp() {
+export default function DashboardApp() {
   const [serverId, setServerId] = useState(SERVERS[0].id);
   const [patients, setPatients] = useState(null);
   const [filter, setFilter] = useState('');
@@ -90,11 +135,13 @@ export default function PatientsApp() {
   const [message, setMessage] = useState(null);
   const server = SERVERS.find((s) => s.id === serverId);
 
-  const load = () => runStep(setMessage, setBusy, `Reading patients from ${server.label}…`, async () => {
+  // done: what happened before the reload, e.g. a deletion, shown in front of the count.
+  const load = (done = '') => runStep(setMessage, setBusy, `Reading patients from ${server.label}…`, async () => {
     setPatients(null);
-    const entries = await fetchAll(server.url, 'Patient?_count=200');
+    // no-cache: HAPI otherwise may answer from its search cache, still listing a deleted patient.
+    const entries = await fetchAll(server.url, 'Patient?_count=200', { 'Cache-Control': 'no-cache' });
     setPatients(entries.map((e) => e.resource));
-    setMessage({ text: `${entries.length} patient${entries.length === 1 ? '' : 's'} on ${server.label}.`, kind: 'ok' });
+    setMessage({ text: `${done ? `${done} ` : ''}${entries.length} patient${entries.length === 1 ? '' : 's'} on ${server.label}.`, kind: 'ok' });
   });
 
   useEffect(() => { load(); }, [serverId]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -107,9 +154,9 @@ export default function PatientsApp() {
   return (
     <div className="mx-auto max-w-7xl space-y-4 px-4 py-6">
       <header>
-        <h1 className="text-2xl font-semibold">Patients on the servers</h1>
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
         <p className="text-slate-500">
-          Who is on each server. Click a patient to see their record. <a className="text-blue-700 underline" href="/">Back to the translator</a>
+          Click a patient to see their record.
         </p>
       </header>
 
@@ -125,7 +172,7 @@ export default function PatientsApp() {
             <Field label="Filter">
               <input className={inputClass} placeholder="Name or identifier" value={filter} onChange={(e) => setFilter(e.target.value)} />
             </Field>
-            <Button className="self-end" onClick={load} disabled={busy}>Reload</Button>
+            <Button className="self-end" onClick={() => load()} disabled={busy}>Reload</Button>
           </>
         )}
       >
@@ -135,11 +182,11 @@ export default function PatientsApp() {
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-500">
-                  {['Name', 'Born', 'Sex', 'Identifiers', 'Server id', 'Updated'].map((h) => <th key={h} className="px-2 py-1.5 font-medium">{h}</th>)}
+                  {['Name', 'Born', 'Sex', 'Identifiers', 'Server id', 'Updated', ''].map((h) => <th key={h} className="px-2 py-1.5 font-medium">{h}</th>)}
                 </tr>
               </thead>
               <tbody>
-                {shown.map((p) => <PatientRow key={`${serverId}/${p.id}`} patient={p} baseUrl={server.url} />)}
+                {shown.map((p) => <PatientRow key={`${serverId}/${p.id}`} patient={p} server={server} onDeleted={load} />)}
               </tbody>
             </table>
           </div>
