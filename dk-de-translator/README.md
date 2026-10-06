@@ -109,7 +109,7 @@ The translation is FHIR all the way: a StructureMap per target, written in the F
 | `dk-to-kbv` | German GP (KBV Basis) |
 | `dk-to-isik` | German hospital (ISiK / MII) |
 | `dk-to-de-common` | groups both import: copying DK-Core resources, translating codes |
-| `de-to-dk` | the other way: a German record (KBV or ISiK / MII) for a Danish EHR (DK-Core), with SKS and WHO ATC codings in front of the German ones; e.g. `data/in/anne-de-gp-bundle.json` |
+| `de-to-epj` | the other way: a German record (KBV or ISiK / MII) for the Danish EHR (EPJ, DK-Core), with SKS (`http://medinfo.dk/sks`, e.g. `DE780`) and WHO ATC codings in front of the German ones; e.g. `data/in/anne-de-gp-bundle.json` |
 
 Each map takes the Danish Bundle and returns a collection Bundle: German profiles in `meta.profile`, a German coding (with `version`) in front of every Danish one, which stays, and the structural changes for the target (KBV: a contained Medication behind `medicationReference`, versions on the AllergyIntolerance codings). Vital signs (blood pressure, heart rate, SpO2) are LOINC on both sides: they keep their codes and get the German vital-sign profile for their LOINC code (KBV, or de.basisprofil for the hospital, as ISiK keeps its own in a module the server does not have), a SNOMED CT coding next to each LOINC one, and for SpO2 the pulse oximetry code and method. Codes go through FML `translate()` with the ConceptMaps in `terminology/conceptmaps/`:
 
