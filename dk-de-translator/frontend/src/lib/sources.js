@@ -1,14 +1,29 @@
-// Getting the record into the wallet. requestRecord() is the seam for the consent /
-// wallet group: the wallet presents its identity credential to the source's verifier
-// (server/verifier.js), which returns the record of the patient the credential is about.
+// Getting the record into the wallet, in two steps (the seam for the consent / wallet group):
+// the source's verifier asks the wallet for the patient's CPR, the patient sees what would be
+// shared and answers. If they share and the verifier accepts the credential, the source returns
+// the record of the patient the credential is about (server/walletPlugin.js).
 
-export async function requestRecord({ sourceId, credential }) {
-  const res = await fetch(`/verifier/record?source=${encodeURIComponent(sourceId)}`, {
-    headers: { Accept: 'application/fhir+json', Authorization: `Bearer ${credential}` },
+async function postJson(url, handle, body) {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${handle}` },
+    body: body && JSON.stringify(body),
   });
   const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(json.error ?? `${res.status} ${res.statusText}`);
+  // A refusal can carry what the verifier checked (verification), to show what failed.
+  if (!res.ok) throw Object.assign(new Error(json.error ?? `${res.status} ${res.statusText}`), { verification: json.verification });
   return json;
+}
+
+// -> {requestId, verifier, disclosures: [{label, value}]}
+export function requestRecord({ sourceId, handle }) {
+  return postJson(`/verifier/requests?source=${encodeURIComponent(sourceId)}`, handle);
+}
+
+// -> {record, verification} if shared (record is a Bundle), null if declined.
+export async function answerRequest({ requestId, handle, share }) {
+  const { shared, record, verification } = await postJson(`/verifier/requests/${encodeURIComponent(requestId)}/response`, handle, { share });
+  return shared ? { record, verification } : null;
 }
 
 // A bundle the patient already has, e.g. downloaded from sundhed.dk.

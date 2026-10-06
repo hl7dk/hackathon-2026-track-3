@@ -1,0 +1,9 @@
+The configuration files in this directory are based on the docker-compose
+configuration of the walt.id identity stack (https://github.com/walt-id/waltid-identity),
+Copyright walt.id GmbH, licensed under the Apache License, Version 2.0
+(http://www.apache.org/licenses/LICENSE-2.0). They have been trimmed and changed
+for this project: one Danish PID credential profile, service hostnames and ports,
+and in-memory storage.
+
+The keys and certificates in them are walt.id's public test material. Use them for
+local demos only.

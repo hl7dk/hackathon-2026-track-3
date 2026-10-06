@@ -1,15 +1,5 @@
-// Verifier in front of a source server: it only hands out a record to the patient the
-// presented credential is about. The CPR comes from the verified credential, never from
-// the request, so asking for someone else's record means forging the issuer's signature.
-import { jwtVerify } from 'jose';
-import { CREDENTIAL_TYPE, ISSUER, issuerKey } from './issuer.js';
-
-// Throws when the token is not signed by our issuer, has expired, or is not an identity credential.
-export async function verifyCredential(token) {
-  const { payload } = await jwtVerify(token, issuerKey.publicKey, { issuer: ISSUER, algorithms: [issuerKey.alg] });
-  if (payload.vct !== CREDENTIAL_TYPE || !payload.sub) throw new Error('Not an identity credential');
-  return payload;
-}
+// Reading a patient's record from a source server, once a verifier has established who they are.
+import { httpError } from './errors.js';
 
 async function getJson(url, headers) {
   const res = await fetch(url, { headers: { Accept: 'application/fhir+json', ...headers } });
@@ -21,7 +11,7 @@ async function getJson(url, headers) {
 export async function fetchRecord({ upstream, headers, cprSystem, cpr }) {
   const search = await getJson(`${upstream}/Patient?identifier=${encodeURIComponent(`${cprSystem}|${cpr}`)}`, headers);
   const patient = search.entry?.[0]?.resource;
-  if (!patient) throw Object.assign(new Error(`No patient with CPR ${cpr} on this server`), { status: 404 });
+  if (!patient) throw httpError(404, `No patient with CPR ${cpr} on this server`);
 
   const entries = [];
   let next = `${upstream}/Patient/${patient.id}/$everything?_count=200`;

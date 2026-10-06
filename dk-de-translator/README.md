@@ -69,15 +69,20 @@ http://localhost:28090/patients.html lists the patients on each server; click on
 
 ### Wallet sign-in
 
-The wallet proves who the patient is with a small issuer → wallet → verifier setup, all in the dev server (`frontend/server/`):
+The wallet proves who the patient is. Routes in `frontend/server/walletPlugin.js`:
 
-- **Issuer** (`issuer.js`) stands in for MitID. "Sign in with MitID" lets you pick a test user (`testUsers` in `config.yml`: Anne, Emma, Mette from `data/in`) and returns an identity credential: a JWT signed with ES256, with the CPR as subject, valid for `wallet.ttlMinutes`. The signing key is made at startup and never leaves the dev server, so restarting `npm run dev` invalidates all credentials. The public key is at `/issuer/jwks`.
-- **Wallet** (`src/components/WalletPanel.jsx`, `src/lib/identity.js`) stores the credential in sessionStorage (it survives a reload, not closing the tab) and presents it as a bearer token.
-- **Verifier** (`verifier.js`) answers `GET /verifier/record?source=<id>`: it checks the signature, issuer and expiry, takes the CPR from the credential, and returns that patient's `Patient/$everything` from the source. The browser never says which CPR it wants, so getting someone else's record means forging the signature. "Try a forged credential" (under the raw JWT) shows this: it changes the CPR in the credential and the verifier refuses it.
+1. **Sign in with MitID** (`POST /wallet/sign-in`): pick a test user (`testUsers` in `config.yml`) and get an identity credential.
+2. **Get my records** (`POST /verifier/requests`): the source asks for the CPR, and the wallet shows what it would share.
+3. **Share** (`POST /verifier/requests/<id>/response`): the verifier checks the credential, takes the CPR from it and returns that patient's `Patient/$everything`. The browser never sends a CPR itself.
 
-The patient has to be on the Danish source first. Alternatively, load a bundle file with the file picker.
+After Share, the wallet card lists what the verifier checked, also logged as `[verifier] …` in the `npm run dev` terminal. "Behind the scenes", next to the wallet card, follows it all live (`GET /events`, `frontend/server/events.js`): walt.id's issuer and verifier events (their SSE streams, followed by the dev server) and the app's own steps, such as the patient's Share or Decline. The patient has to be on the Danish source first; alternatively, load a bundle file.
 
-Not covered: the credential is not bound to a device key, so a copied token works until it expires; and the plain proxy paths (`/datasource1/fhir`, used by validation and `patients.html`) are still open.
+`wallet.mode` in `config.yml` picks the implementation:
+
+- **`waltid`** (default, `frontend/server/waltid.js`): walt.id's issuer, verifier and wallet on 28095-28097 plus its web wallet on 28098, started by `./dev.sh` (compose profile `wallet`, configs in `waltid/`), all in memory. Sign-in issues an EUDI PID (SD-JWT VC) with the CPR as `personal_administrative_number` into a walt.id wallet, bound to its key (OpenID4VCI). The source asks for the CPR only (OpenID4VP); the other claims stay hidden. Besides walt.id's checks, we check that the PID is signed with our issuer's published key, since walt.id only checks against the certificate inside the PID. walt.id's web wallet (http://localhost:28098, "Open my wallet") shows the PID: log in as `<test user id>@wallet.demo` with `wallet.waltid.accountPassword` from `config.yml` (the card shows both). Restarting walt.id or the dev server: sign in again.
+- **`demo`** (`frontend/server/demo.js`): no extra services. The dev server signs a JWT with the CPR as subject and the browser holds it. "Try a forged credential" edits the CPR, and the verifier refuses it.
+
+Not covered: the dev server drives both wallet and verifier, so "Share" is a button on our page rather than in the patient's own wallet app; and the plain proxy paths (`/datasource1/fhir`, used by validation and `patients.html`) are still open.
 
 Validation uses `$validate` on the HAPI server you pick, so it needs the IGs loaded there. On a German server each resource is checked as if it claimed that server's profile, the same mapping as the CLI validators.
 

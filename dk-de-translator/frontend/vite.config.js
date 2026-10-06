@@ -35,7 +35,7 @@ const proxy = Object.fromEntries([...sources, ...targets].filter((s) => s.proxyT
 // The wallet's verifier calls the sources server-side, so it needs the real url and credentials.
 const walletSources = sources.map((s) => {
   const auth = basicAuth(s);
-  return { id: s.id, upstream: s.proxyTo ?? s.url, headers: auth ? { Authorization: `Basic ${Buffer.from(auth).toString('base64')}` } : {} };
+  return { id: s.id, label: s.label, upstream: s.proxyTo ?? s.url, headers: auth ? { Authorization: `Basic ${Buffer.from(auth).toString('base64')}` } : {} };
 });
 
 // The proxy and the wallet routes are built from config.yml when the server starts, so restart on edits.

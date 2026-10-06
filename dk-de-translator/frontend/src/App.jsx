@@ -1,16 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { loadSession, saveSession } from './lib/identity.js';
 import { SOURCES, TARGETS } from './lib/config.js';
 import DataPanel from './components/DataPanel.jsx';
+import EventLog from './components/EventLog.jsx';
 import SharePanel from './components/SharePanel.jsx';
 import ValidationPanel from './components/ValidationPanel.jsx';
 import WalletPanel from './components/WalletPanel.jsx';
 
 export default function App() {
+  const [session, setSession] = useState(loadSession); // the wallet session: {handle, claims, since}
   const [record, setRecord] = useState(null);
   const [converted, setConverted] = useState(null);
   const [view, setView] = useState('original');
   const [targetId, setTargetId] = useState(TARGETS[0].id);
   const [validateOn, setValidateOn] = useState(SOURCES[0].id);
+
+  useEffect(() => {
+    saveSession(session);
+  }, [session]);
 
   const onRecord = (bundle) => {
     setRecord(bundle);
@@ -41,11 +48,14 @@ export default function App() {
       </header>
 
       <div className="rounded-md border border-dashed border-amber-400 bg-amber-50 px-4 py-2 text-sm text-amber-900">
-        <strong>Draft prototype.</strong> Sign-in uses a demo MitID issuer, not real MitID. Consent is a placeholder: nothing is enforced.
+        <strong>Draft prototype.</strong> Sign-in uses a demo MitID issuer, not real MitID, and the wallet runs on the server. Consent to share with a German provider is a placeholder: nothing is enforced.
         The DK → DE translation is not connected yet.
       </div>
 
-      <WalletPanel record={record} onRecord={onRecord} />
+      <div className={`grid items-start gap-4 ${session ? 'lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]' : ''}`}>
+        <WalletPanel session={session} onSession={setSession} record={record} onRecord={onRecord} />
+        {session && <EventLog since={session.since ?? 0} />}
+      </div>
 
       {record && (
         <>
