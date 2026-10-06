@@ -4,5 +4,5 @@ import raw from '../../config.yml?raw';
 
 const config = parse(raw);
 
-export const { patient: DEFAULT_PATIENT, cprSystem: CPR_SYSTEM, sources: SOURCES, targets: TARGETS, scopes: SCOPES, purposes: PURPOSES, systemLabels: SYSTEM_LABELS } = config;
+export const { testUsers: TEST_USERS, wallet: WALLET, cprSystem: CPR_SYSTEM, sources: SOURCES, targets: TARGETS, scopes: SCOPES, purposes: PURPOSES, systemLabels: SYSTEM_LABELS } = config;
 export const SERVERS = [...SOURCES, ...TARGETS];

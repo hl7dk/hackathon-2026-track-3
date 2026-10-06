@@ -1,4 +1,4 @@
-# Front end configuration. Restart `npm run dev` after editing.
+# Front end configuration. `npm run dev` restarts itself when this file changes.
 #
 # Each server has a url the page calls. With proxyTo set, `npm run dev` forwards
 # that path to the real server, so CORS does not come into play. auth: basic makes
@@ -7,11 +7,29 @@
 # For the local containers (docker compose --profile local up -d), use
 # proxyTo http://localhost:28080/fhir (dk), 28081 (de-hospital), 28082 (de-gp) and drop auth.
 
-# Who the placeholder sign-in logs in.
-patient:
-  name: Anne Sørensen
-  login: MitID test user A.Sorensen
-  cpr: "1109859996"
+# Who can sign in with the demo MitID issuer. The identity credential it issues proves
+# the CPR; the verifier only returns that patient's record. These are the Danish test
+# patients in ../data/in.
+testUsers:
+  - { id: anne, given: Anne, family: Sørensen, birthDate: "1985-09-11", login: MitID test user A.Sorensen, cpr: "1109859996" }
+  - { id: emma, given: Emma, family: Nielsen, birthDate: "2017-03-14", login: MitID test user E.Nielsen, cpr: "1403174012" }
+  - { id: mette, given: Mette, family: Hansen, birthDate: "1971-08-22", login: MitID test user M.Hansen, cpr: "2208712468" }
+
+wallet:
+  # waltid: walt.id issuer, wallet and verifier (docker compose --profile wallet, see ../waltid).
+  #   Sign-in issues an EUDI PID (SD-JWT VC) into a walt.id wallet; the source asks for the CPR over OpenID4VP.
+  # demo: a JWT signed by the dev server itself (server/demo), held by the browser. No extra services.
+  mode: waltid
+  ttlMinutes: 15 # demo mode: how long a credential is valid
+  waltid:
+    issuer: http://localhost:28095
+    verifier: http://localhost:28096
+    wallet: http://localhost:28097
+    webWallet: http://localhost:28098 # walt.id's web wallet, "Open my wallet"
+    # Each test user's wallet account is <id>@wallet.demo with this password (local, in-memory demo accounts).
+    accountPassword: local-demo-wallet
+    profileId: dkPid # issuer profile, waltid/issuer/config/issuer2-profiles.conf
+    credentialType: urn:eudi:pid:1 # the vct the verifier asks for
 
 cprSystem: urn:oid:1.2.208.176.1.2
 

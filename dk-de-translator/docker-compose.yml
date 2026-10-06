@@ -43,6 +43,47 @@ services:
     mem_limit: 4g
     profiles: ["local", "terminology"]
 
+  # walt.id identity stack for the wallet (wallet.mode: waltid in frontend/config.yml):
+  # docker compose --profile wallet up -d. Configs in ./waltid, everything in memory.
+  # The services reach each other by service name (offer and request URLs use them),
+  # the dev server uses the published ports.
+  waltid-issuer:
+    image: waltid/issuer-api2:1.1.1
+    ports:
+      - "28095:7005"
+    volumes:
+      - ./waltid/issuer/config:/waltid-issuer-api2/config:ro
+    profiles: ["wallet"]
+
+  waltid-verifier:
+    image: waltid/verifier-api2:1.1.1
+    ports:
+      - "28096:7004"
+    volumes:
+      - ./waltid/verifier/config:/waltid-verifier-api2/config:ro
+    profiles: ["wallet"]
+
+  waltid-wallet:
+    image: waltid/wallet-api2:latest
+    ports:
+      - "28097:7006"
+    volumes:
+      - ./waltid/wallet/config:/waltid-wallet-api2/config:ro
+    profiles: ["wallet"]
+
+  # walt.id's web wallet (the wallet-api2 one): log in with a test user's wallet account to see
+  # the key and PID. It runs in the browser and calls the wallet API at its published port.
+  waltid-web-wallet:
+    image: waltid/wallet-demo-compose-web:latest
+    ports:
+      - "28098:8080"
+    environment:
+      WALLET_API2_PUBLIC_URL: http://localhost:28097
+      WALLET_BRAND_APP_TITLE: Patient wallet
+    depends_on:
+      - waltid-wallet
+    profiles: ["wallet"]
+
   # Two validators because hospital and GP use different de.basisprofil.r4 versions
   validator-hospital:
     build:

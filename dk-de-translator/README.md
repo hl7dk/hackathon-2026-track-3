@@ -57,7 +57,7 @@ Reports go to `data/out/<hospital|gp>/report.html`. Set `INPUTS` to validate spe
 
 ## Frontend
 
-A draft UI in `frontend/` (Vite, React, Tailwind): get the patient's records into a wallet, look at them next to their validation output, give consent, convert and send to a German server. The wallet, sign-in and consent are placeholders (marked as such on the page): every button just works, nothing is authenticated or enforced. Convert passes the data on unchanged for now.
+A draft UI in `frontend/` (Vite, React, Tailwind): get the patient's records into a wallet, look at them next to their validation output, give consent, convert and send to a German server. Consent is a placeholder (marked as such on the page): nothing is enforced. Convert passes the data on unchanged for now.
 
 With `.env` in place:
 
@@ -67,8 +67,23 @@ With `.env` in place:
 
 http://localhost:28090/patients.html lists the patients on each server; click one to see their record.
 
-"Get my records" in the wallet looks up the patient by CPR on the Danish source and reads `Patient/$everything`, so the patient has to be on that server first. Alternatively, load a bundle file with the file picker.
+### Wallet sign-in
+
+The wallet proves who the patient is. Routes in `frontend/server/walletPlugin.js`:
+
+1. **Sign in with MitID** (`POST /wallet/sign-in`): pick a test user (`testUsers` in `config.yml`) and get an identity credential.
+2. **Get my records** (`POST /verifier/requests`): the source asks for the CPR, and the wallet shows what it would share.
+3. **Share** (`POST /verifier/requests/<id>/response`): the verifier checks the credential, takes the CPR from it and returns that patient's `Patient/$everything`. The browser never sends a CPR itself.
+
+After Share, the wallet card lists what the verifier checked, also logged as `[verifier] …` in the `npm run dev` terminal. "Behind the scenes", next to the wallet card, follows it all live (`GET /events`, `frontend/server/events.js`): walt.id's issuer and verifier events (their SSE streams, followed by the dev server) and the app's own steps, such as the patient's Share or Decline. The patient has to be on the Danish source first; alternatively, load a bundle file.
+
+`wallet.mode` in `config.yml` picks the implementation:
+
+- **`waltid`** (default, `frontend/server/waltid.js`): walt.id's issuer, verifier and wallet on 28095-28097 plus its web wallet on 28098, started by `./dev.sh` (compose profile `wallet`, configs in `waltid/`), all in memory. Sign-in issues an EUDI PID (SD-JWT VC) with the CPR as `personal_administrative_number` into a walt.id wallet, bound to its key (OpenID4VCI). The source asks for the CPR only (OpenID4VP); the other claims stay hidden. Besides walt.id's checks, we check that the PID is signed with our issuer's published key, since walt.id only checks against the certificate inside the PID. walt.id's web wallet (http://localhost:28098, "Open my wallet") shows the PID: log in as `<test user id>@wallet.demo` with `wallet.waltid.accountPassword` from `config.yml` (the card shows both). Restarting walt.id or the dev server: sign in again.
+- **`demo`** (`frontend/server/demo.js`): no extra services. The dev server signs a JWT with the CPR as subject and the browser holds it. "Try a forged credential" edits the CPR, and the verifier refuses it.
+
+Not covered: the dev server drives both wallet and verifier, so "Share" is a button on our page rather than in the patient's own wallet app; and the plain proxy paths (`/datasource1/fhir`, used by validation and `patients.html`) are still open.
 
 Validation uses `$validate` on the HAPI server you pick, so it needs the IGs loaded there. On a German server each resource is checked as if it claimed that server's profile, the same mapping as the CLI validators.
 
-Server URLs, profiles, the default patient and the share options are in `frontend/config.yml`. The page calls the Danish source as `/datasource1/fhir`, which `npm run dev` proxies to the shared server, adding the credentials from `.env` (`auth: basic`) so they never reach the browser. The German targets are the local servers started by `./dev.sh`, called as `/local-de-hospital/fhir` and `/local-de-gp/fhir` and proxied to ports 28081 and 28082 without credentials. To send to the shared German servers instead, point them at `datasource2` and `datasource3` with `auth: basic` (see the comment above `targets` in `config.yml`).
+Server URLs, profiles, the test users and the share options are in `frontend/config.yml`. The page calls the Danish source as `/datasource1/fhir`, which `npm run dev` proxies to the shared server, adding the credentials from `.env` (`auth: basic`) so they never reach the browser. The German targets are the local servers started by `./dev.sh`, called as `/local-de-hospital/fhir` and `/local-de-gp/fhir` and proxied to ports 28081 and 28082 without credentials. To send to the shared German servers instead, point them at `datasource2` and `datasource3` with `auth: basic` (see the comment above `targets` in `config.yml`).
