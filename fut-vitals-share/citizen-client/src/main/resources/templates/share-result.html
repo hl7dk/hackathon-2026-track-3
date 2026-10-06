@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+    <title>Measurements shared</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="card">
+        <div class="page-header">
+            <h1>Measurements shared</h1>
+            <p class="lede">
+                Stored in your personal health record at <span th:text="${phrUrl}">server</span>.
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+            <tr>
+                <th>What</th>
+                <th>Result</th>
+                <th>Stored as</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="result : ${results}">
+                <td th:text="${result.label()}">-</td>
+                <td th:text="${result.status()}">-</td>
+                <td class="text-sm" th:text="${result.location() ?: '-'}">-</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="btn-group">
+        <a th:href="@{/share}" class="btn btn-secondary">Back to my measurements</a>
+    </div>
+</main>
+</body>
+</html>

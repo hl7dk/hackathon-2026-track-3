@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: citizen-client
+  thymeleaf:
+    cache: false
+  security:
+    oauth2:
+      client:
+        registration:
+          citizen:
+            provider: citizen
+            client-id: ${EHEALTH_CITIZEN_CLIENT_ID:}
+            authorization-grant-type: authorization_code
+            scope:
+              - openid
+              - profile
+              - offline_access
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        provider:
+          citizen:
+            issuer-uri: ${EHEALTH_CITIZEN_ISSUER_URI:}
+
+server:
+  port: 8090
+  forward-headers-strategy: framework
+
+ehealth:
+  issuer-uri: ${EHEALTH_CITIZEN_ISSUER_URI:}
+  client-registration-id: citizen
+
+fhir:
+  server:
+    patient: ${FHIR_SERVER_PATIENT:}
+    care-plan: ${FHIR_SERVER_CARE_PLAN:}
+    plan: ${FHIR_SERVER_PLAN:}
+    measurement: ${FHIR_SERVER_MEASUREMENT:}
+    task: ${FHIR_SERVER_TASK:}
+    device: ${FHIR_SERVER_DEVICE:}
+
+# The citizen's personal health record, where shared vital signs are written (see PersonalHealthRecordAPI).
+phr:
+  url: ${PHR_URL:https://datasource1.hl7-your-health.projects.alexandrainst.dk/fhir}
+  username: ${PHR_USERNAME:}
+  password: ${PHR_PASSWORD:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

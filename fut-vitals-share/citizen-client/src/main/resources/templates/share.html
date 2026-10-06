@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+    <title>Share measurements</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="card">
+        <div class="page-header">
+            <h1>Share my measurements</h1>
+            <p class="lede">
+                Choose the measurements to share with your doctor. They are converted to the Danish
+                DK-Core (IPA) format and stored in your personal health record, from where they can
+                be translated and sent on to your German GP.
+            </p>
+        </div>
+    </div>
+
+    <form class="card" th:action="@{/share}" method="post">
+        <h2>Heart rate, oxygen saturation and blood pressure</h2>
+        <p class="text-muted" th:if="${vitalSigns.isEmpty()}">
+            You have no heart rate, oxygen saturation or blood pressure measurements from the last year.
+        </p>
+        <table th:if="${!vitalSigns.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Share</th>
+                <th>When</th>
+                <th>Measurement</th>
+                <th>Value</th>
+                <th>Duplicate key</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vital : ${vitalSigns}">
+                <td><input type="checkbox" name="selected" th:value="${vital.sourceUrl()}" checked
+                           th:aria-label="'Share ' + ${vital.label()} + ' ' + ${vital.when()}"></td>
+                <td th:text="${vital.when() ?: '-'}">-</td>
+                <td th:text="${vital.label() ?: '-'}">-</td>
+                <td th:text="${vital.value() ?: '-'}">-</td>
+                <td class="text-sm">
+                    <code th:if="${vital.duplicateKey() != null}" th:text="${vital.duplicateKey()}">id</code>
+                    <span th:if="${vital.duplicateKey() == null}" class="text-muted"
+                          title="No identifier: sharing it again creates a duplicate">None</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p class="text-sm text-muted">
+            Your name, CPR number, gender, birth date and address are shared with the measurements.
+            Destination: <span th:text="${phrUrl}">server</span>
+        </p>
+        <div class="btn-group" th:if="${!vitalSigns.isEmpty()}">
+            <button type="submit" name="action" value="send" class="btn btn-primary">Share selected</button>
+            <button type="submit" name="action" value="download" class="btn btn-secondary">Download as FHIR Bundle</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
